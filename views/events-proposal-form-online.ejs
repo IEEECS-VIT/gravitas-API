@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html data-ng-app="EventsApp">
+
+<head>
+  <title>Events Proposal Form</title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+
+  <!-- TODO: Add Missing File -->
+  <link rel="stylesheet" href="/stylesheets/proposal-form.css">
+  <!--STYLES END-->
+</head>
+
+<body data-ng-controller="FormCtrl" class="container">
+
+  <h1 class="text-center">Events Form</h1>
+  <form id="eventsForm" name="eventsForm" novalidate="" data-ng-submit="sub()">
+    <h4>Basic Details</h4>
+
+    <fieldset>
+      <label for="name" data-ng-class="{'error': eventsForm.name.$dirty && eventsForm.name.$invalid}">Event Name</label>
+      <input id="name" name="name" data-ng-model="formdata.event.name" data-ng-required="true" type="text">
+      <br/>
+
+      <label for="category" data-ng-class="{ 'error': eventsForm.category.$dirty && eventsForm.category.$invalid }">Event Category</label>
+      <select data-ng-model="formdata.event.category" name="eventCat" id="eventCat" required="true" data-ng-required="true" data-ng-options="o as o for o in eventCat"></select>
+      <br/>
+
+      <label for="resPerson" data-ng-class="{ 'error': eventsForm.resPerson.$dirty && eventsForm.resPerson.$invalid }">Resource Person</label>
+      <select data-ng-model="formdata.event.resPerson" name="eventCat" id="resPerson" required="true" data-ng-required="true" data-ng-options="o as o for o in resPerson"></select>
+      <br/>
+
+      <label for="eventType" data-ng-class="{ 'error': eventsForm.eventType.$dirty && eventsForm.eventType.$invalid }">Event Type</label>
+      <select data-ng-model="formdata.event.type" name="eventType" id="eventType" required="true" data-ng-required="true" data-ng-options="o as o for o in eventTypes"></select>
+      <br/>
+
+      <label for="expEx" data-ng-class="{'error' : eventsForm.expEx.$dirty && eventsForm.expEx.$invalid}">Expected External Participants</label>
+      <input id="expEx" name="expEx" type="number" data-ng-model="formdata.expEx" min="0" data-ng-required="true">
+      <br/>
+
+      <label for="expIn" data-ng-class="{'error' : eventsForm.expIn.$dirty && eventsForm.expIn.$invalid}">Expected Internal Participants</label>
+      <input id="expIn" name="expIn" type="number" data-ng-model="formdata.expIn" min="0" data-ng-required="true">
+      <br/>
+
+
+      <br>
+    </fieldset>
+
+    <h4>Faculty Coordinator Details</h4>
+
+    <fieldset>
+      <label for="fName" data-ng-class="{'error': eventsForm.fName.$dirty && eventsForm.fName.$invalid}">Name</label>
+      <input id="fName" name="fName" data-ng-model="formdata.faculty.name" data-ng-required="true" type="text">
+      <br/>
+
+      <label for="school" data-ng-class="{ 'error': eventsForm.school.$dirty && eventsForm.school.$invalid }">School</label>
+      <select data-ng-model="formdata.faculty.school" name="eventType" id="eventType" required="true" data-ng-required="true" data-ng-options="o as o for o in schoolNames"></select>
+      <br/>
+
+      <label for="empid" data-ng-class="{'error' : eventsForm.empid.$dirty && eventsForm.empid.$invalid}">EMPID</label>
+      <input id="empid" name="empid" type="number" data-ng-model="formdata.faculty.empid" min="0" data-ng-required="true">
+      <br/>
+
+      <label for="fEmail" data-ng-class="{'error' : eventsForm.fEmail.$dirty && eventsForm.fEmail.$invalid}">Email</label>
+      <input id="fEmail" name="fEmail" type="email" data-ng-model="formdata.faculty.email" data-ng-required="true">
+      <br/>
+
+      <label for="fNo" data-ng-class="{'error' : eventsForm.fNo.$dirty && eventsForm.fNo.$invalid}">Moble No.</label>
+      <input id="fNo" name="fNo" type="number" data-ng-model="formdata.faculty.number" data-ng-required="true">
+      <br/>
+
+      <br>
+    </fieldset>
+
+    <h4>Organization</h4>
+
+    <fieldset>
+
+      <fieldset>
+        <label for="chapOrg" class="radio-label">
+          <input id="chapOrg" name="org" value="chap" data-ng-model="org" data-ng-required="true" type="radio">Single Chapter</label>
+        <br>
+        <label for="clubOrg" class="radio-label">
+          <input id="clubOrg" name="org" value="club" data-ng-model="org" data-ng-required="true" type="radio">Single Club</label>
+        <br><!--
+        <label for="indOrg" class="radio-label">
+          <input id="indOrg" name="org" value="Individual" data-ng-model="org" data-ng-required="true" type="radio">Individual</label>
+        <br>      -->
+        <label for="collOrg" class="radio-label">
+          <input id="collOrg" name="org" value="coll" data-ng-model="org" data-ng-required="true" type="radio">Collaboration</label>
+        <br>
+      </fieldset>
+
+      <div data-ng-if="org=='chap'" data-ng-init="formdata.event.org=null">
+        <label for="chap" data-ng-class="{'error' : eventsForm.eventType.$dirty && eventsForm.eventType.$invalid}">Chapter Name</label>
+        <select data-ng-model="formdata.event.org.chapter" data-ng-required="true" id="chap" data-ng-options="val as val for val in chapterNames" name="chap"></select>
+        <br>
+      </div>
+
+      <div data-ng-if="org=='club'" data-ng-init="formdata.event.org=null">
+        <label for="club" data-ng-class="{'error' : eventsForm.eventType.$dirty && eventsForm.eventType.$invalid}">Club Name</label>
+        <select data-ng-model="formdata.event.org.club" data-ng-required="true" id="club" data-ng-options="val as val for val in clubNames" name="club"></select>
+        <br>
+      </div>
+
+      <div data-ng-if="org=='coll'" data-ng-init='formdata.event.org.coll=["",""]'>
+        <div data-ng-repeat="(i,value) in formdata.event.org.coll track by $index">
+          <label for="coll" data-ng-class="{'error' : eventsForm.eventType.$dirty && eventsForm.eventType.$invalid}">Chapter/Club Names</label>
+          <select data-ng-model="formdata.event.org.coll[i]" data-ng-required="true" id="coll" data-ng-options="val as val for val in collNames" name="coll"></select>
+
+          <button type="button" class="button button-small float-right" data-ng-click="delColl($index);" data-ng-show="formdata.event.org.coll.length > 2">Remove</button>
+          <br>
+        </div>
+        <button type="button" class="button button-small" data-ng-click="addColl()">add</button>
+      </div>
+    </fieldset>
+
+    <h4>Participation</h4>
+    <fieldset>
+
+      <fieldset>
+        <label for="team" class="radio-label">
+          <input id="team" name="team" value="true" data-ng-model="formdata.team" data-ng-required="true" type="radio">Team</label>
+        <br>
+
+        <label for="individual" class="radio-label">
+          <input id="individual" name="team" value="false" data-ng-model="formdata.team" data-ng-required="true" type="radio">Individual</label>
+        <br>
+
+      </fieldset>
+
+      <label for="summary" data-ng-class="{'error': eventsForm.summary.$dirty && eventsForm.summary.$invalid}">Summary</label>
+      <textarea class="validate" id="summary" name="summary" data-ng-model="formdata.event.summary" data-ng-required="true"></textarea>
+      <br>
+
+      <label for="description" data-ng-class="{'error': eventsForm.description.$dirty && eventsForm.description.$invalid}">Description</label>
+      <textarea class="validate" id="description" name="description" data-ng-model="formdata.event.description" data-ng-required="true"></textarea>
+      <br>
+    </fieldset>
+
+    <h4>Coordinators</h4>
+    <fieldset>
+      <div data-ng-repeat="value in formdata.coordinators">
+        <h5>
+          <b>{{"Coordinator "+($index+1)}}</b>
+<!--          <button class="button button-small float-right" data-ng-click="delCoord($index)" data-ng-show="formdata.coordinators.length > 2">Remove</i>
+-->    </h5>
+
+        <label for="coName{{$index}}" data-ng-class="{'error' : eventsForm['coName{{$index}}'].$dirty && eventsForm['coName{{$index}}'].$invalid}">Name</label>
+        <input class="validate" id="coName{{$index}}" name="coName{{$index}}" data-ng-model="value.name" data-ng-required="true" type="text">
+        <br>
+
+        <label for="coReg{{$index}}" data-ng-class="{'error' : eventsForm['coReg{{$index}}'].$dirty && eventsForm['coReg{{$index}}'].$invalid }">Registration Number</label>
+        <input class="validate" id="coReg{{$index}}" name="coReg{{$index}}" data-ng-model="value.regno" data-ng-required="true" type="text">
+        <br>
+
+        <label for="coEm{{$index}}" data-ng-class="{'error' : eventsForm['coEm{{$index}}'].$dirty && eventsForm['coEm{{$index}}'].$invalid}">Email</label>
+        <input class="validate" id="coEm{{$index}}" name="coEm{{$index}}" data-ng-model="value.email" data-ng-required="true" type="email">
+        <br>
+
+        <label for="coNo{{$index}}" data-ng-class="{'error' : eventsForm['coNo{{$index}}'].$dirty && eventsForm['coNo{{$index}}'].$invalid}">Phone Number</label>
+        <input class="validate" id="coNo{{$index}}" name="coNo{{$index}}" data-ng-model="value.phone" data-ng-required="true" type="text">
+        <br>
+
+        <label for="coRo{{$index}}" data-ng-class="{'error' : eventsForm['coRo{{$index}}'].$dirty && eventsForm['coRo{{$index}}'].$invalid}">Room Number</label>
+        <input class="validate" id="coRo{{$index}}" name="coRo{{$index}}" data-ng-model="value.room" data-ng-required="true" type="text">
+        <br>
+      </div>
+
+<!--      <button data-ng-click="addCoord()" type="button" class="button button-small">Add</button>-->
+    </fieldset>
+
+    <h4>Finance</h4>
+    <fieldset>
+      <label for="fees" data-ng-class="{'error' : eventsForm.fees.$dirty && eventsForm.fees.$invalid}">Fees per team</label>
+      <input id="fees" name="fees" data-ng-model="formdata.finance.fees" data-ng-required="true" type="number" min="0">
+      <br>
+    </fieldset>
+
+    <h5>Prizes</h5>
+
+    <div>
+        <fieldset>
+          <label for="prize">Total Prize</label>
+          <input type="number" id="prize" min="0" data-ng-disabled="true" name="prize" data-ng-model="formdata.finance.prize.total" data-ng-required="true">
+          <br>
+
+          <div data-ng-repeat="value in formdata.finance.prize.breakdown">
+            <label for="prize{{$index}}" data-ng-class="eventsForm['prize{{$index}}'].$dirty && eventsForm['prize{{$index}}'].$invalid">
+              Prize Money <b>{{$index+1}}</b>
+
+            </label>
+            <input type="number" data-ng-change="totalPrize()" class="validate" min="0" data-ng-label="Prize Money" name="prize{{$index}}" data-ng-model="value.amount" data-ng-required="true">
+            <button data-ng-click="delBreak($index)" type="button" class="button button-small float-right" data-ng-show="formdata.finance.prize.breakdown.length > 1">remove</button>
+            <br>
+
+
+          </div>
+          <button data-ng-click="addBreak()" type="button" class="button button-small">Add</button>
+        </fieldset>
+
+        <fieldset>
+            <!--        <input id="cash" name="prizemoney" value="cash" ng-model="formdata.prizemoney" ng-required="true" type="radio">
+            <label for="cash">Cash</label>
+            <br>-->
+            <input id="other" name="prizemoney" ng-model="formdata.other" type="checkbox">
+            <label for="other">Other</label>
+        </fieldset>
+
+        <div ng-if="formdata.other==true">
+            <fieldset>
+                <label for="otherDesc" data-ng-class="eventsForm['otherDescs'].$dirty && eventsForm['otherDesc'].$invalid">Description</label>
+                <input type="text" class="validate" ng-model="formdata.prize.other" name="otherDesc" ng-required="true" id="otherDesc">
+            </fieldset>
+        </div>
+    </div>
+    <h5>Guests</h5>
+
+    <fieldset>
+      <div data-ng-repeat="val in formdata.guest">
+        <h6>
+          <b>{{"Guest "+($index+1)}}</b>
+          <button data-ng-click="delGuest($index)" type="button" class="button button-small float-right">remove</button>
+        </h6>
+        <label for="guestN{{$index}}" data-ng-class="{'error' : eventsForm['guestN{{$index}}'].$dirty && eventsForm['guestN{{$index}}'].$invalid}">Name</label>
+        <input type="text" class="validate" data-ng-model="val.name" name="guestN{{$index}}" data-ng-required="true">
+        <br>
+
+        <label for="travAmount{{$index}}" data-ng-class="{'error': eventsForm['travAmount{{$index}}'].$dirty && eventsForm['travAmount{{$index}}'].$invalid}">Travel Amount</label>
+        <input type="number" class="validate" name="travAmount{{$index}}" data-ng-model="val.travel.amount" data-ng-required="true" min="0">
+        <br>
+
+        <label for="trav{{$index}}" data-ng-class="{'error': eventsForm['trav{{$index}}'].$dirty && eventsForm['trav{{$index}}'].$invalid}">Travelling From</label>
+        <input type="text" class="validate" name="trav{{$index}}" data-ng-model="val.travel.from" data-ng-required="true">
+        <br>
+
+        <label for="stayDur{{$index}}" data-ng-class="{'error' : eventsForm['stayDur{{$index}}'].$dirty && eventsForm['stayDur{{$index}}'].$invalid}">Stay Duration</label>
+        <input type="number" min="0" class="validate" name="stayDur{{$index}}" data-ng-model="val.stay.duration" data-ng-required="true">
+        <br>
+
+        <label for="foodUnits{{$index}}" data-ng-class="{'error' : eventsForm['foodUnits{{$index}}'].$dirty && eventsForm['foodUnits{{$index}}'].$invalid}">Food Units</label>
+        <input type="number" class="validate" name="foodUnits{{$index}}" data-ng-model="val.food.units" data-ng-required="true" min="0">
+        <br>
+
+      </div>
+      <button data-ng-click="addGuest()" type="button" class="button button-small">add</button>
+    </fieldset>
+
+    <h4>Miscellaneous Cost</h4>
+
+    <fieldset>
+        <select class="browser-default" ng-model="formdata.select" ng-options="key as key for (key,val) in formdata.costs"></select>
+        <button type="button" class="btn btn-default" ng-click="addCost()">Add Cost</button>
+    </fieldset>
+
+    <div ng-if="formdata.costs.Certificates">
+        <h5>Certificates
+            <button class="button button-small float-right" data-ng-click="delCost('Certificates')">Remove</i>
+        </h5>
+
+        <fieldset>
+<!--
+          <label for="certCoor" data-ng-class="{'error' : eventsForm.certCoor.$dirty && eventsForm.certCoor.$invalid}">Coordinator certificate</label>
+          <input type="number" class="validate" id="certCoor" min="0" name="certCoor" data-ng-required="true" data-ng-model="formdata.finance.budget.certificates.coordinator">
+          <br>
+
+          <label for="certPart" data-ng-class="{'error': eventsForm.certPart.$dirty && eventsForm.certPart.$invalid}">Participant certificates</label>
+          <input type="number" class="validate" id="certPart" min="0" name="certPart" data-ng-required="true" data-ng-model="formdata.finance.budget.certificates.participant">
+          <br>
+
+          <label for="certWin" data-ng-class="{'error': eventsForm.certWin.$dirty && eventsForm.certWin.$invalid}">Winner certificates</label>
+          <input type="number" class="validate" id="certWin" min="0" name="certWin" data-ng-required="true" data-ng-model="formdata.finance.budget.certificates.winner">
+          <br>
+-->
+          <label for="certTot" data-ng-class="{'error' : eventsForm.certTot.$dirty && eventsForm.certTot.$invalid}">Total certificates</label>
+          <input type="number" class="validate" id="certTot" min="0" name="certTot" data-ng-required="true" data-ng-model="formdata.finance.budget.certificates.total">
+          <br>
+
+          <label for="certCost" data-ng-class="{'error' : eventsForm.certCost.$dirty && eventsForm.certCost.$invalid}">Total Cost</label>
+          <input type="number" class="validate" id="certCost" min="0" name="certCost" data-ng-required="true" data-ng-model="formdata.finance.budget.certificates.cost">
+          <br>
+        </fieldset>
+    </div>
+
+    <div ng-if="formdata.costs.Mementos">
+        <h5>Mementos
+            <button class="button button-small float-right" data-ng-click="delCost('Mementos')">Remove</i>
+        </h5>
+
+        <fieldset>
+          <label for="memUnit" data-ng-class="{'error': eventsForm.memUnit.$dirty && eventsForm.memUnit.$invalid}">Memento Units</label>
+          <input type="number" id="memUnit" min="0" name="memUnit" data-ng-required="true" data-ng-model="formdata.finance.budget.mementos.unit">
+          <br>
+
+          <label for="memCost" data-ng-class="{'error' : eventsForm.memCost.$dirty && eventsForm.memCost.$invalid}">Memento Cost  </label>
+          <input type="number" id="memCost" min="0" name="memCost" data-ng-required="true" data-ng-model="formdata.finance.budget.mementos.cost">
+          <br>
+        </fieldset>
+    </div>
+
+    <div ng-if="formdata.costs.Tags">
+        <h5>Tags
+            <button class="button button-small float-right" data-ng-click="delCost('Tags')">Remove</i>
+        </h5>
+
+        <fieldset>
+          <label for="tagUnit" data-ng-class="{'error': eventsForm.tagUnit.$dirty && eventsForm.tagUnit.$invalid}">Tag Units  </label>
+          <input type="number" class="validate" id="tagUnit" min="0" name="tagUnit" data-ng-required="true" data-ng-model="formdata.finance.budget.tags.unit">
+          <br>
+
+          <label for="tagCost" data-ng-class="{'error': eventsForm.tagCost.$dirty && eventsForm.tagCost.$invalid}">Tag Cost</label>
+          <input type="number" class="validate" id="tagCost" min="0" name="tagCost" data-ng-required="true" data-ng-model="formdata.finance.budget.tags.cost">
+          <br>
+
+        </fieldset>
+    </div>
+
+    <div ng-if="formdata.costs.Others">
+        <h5>Other Costs
+            <button class="button button-small float-right" data-ng-click="delCost('Others')">Remove</i>
+        </h5>
+        <div ng-repeat="val in formdata.others">
+            <h6>Other Cost {{$index + 1}}
+                <button data-ng-click="delOther($index)" type="button" class="button button-small float-right" data-ng-show="formdata.others.length > 1">remove</button>
+            </h6>
+            <fieldset>
+
+                <label for="othersN{{$index}}" data-ng-class="{'error': eventsForm['othersN{{$index}}'].$dirty && eventsForm['othersN{{$index}}'].$invalid}">Description</label>
+                <input class="validate" id="othersN{{$index}}" name="othersN{{$index}}" ng-model="value.description" ng-required="true" type="text">
+                <br>
+                <label for="othersC{{$index}}" data-ng-class="{'error' : eventsForm['othersC{{$index}}'].$dirty && eventsForm['othersC{{$index}}'].$invalid}">Cost  </label>
+                <input type="number" class="validate" id="othersC{{$index}}" min="0" name="othersC{{$index}}" ng-required="true" ng-model="val.cost">
+                <br>
+
+            </fieldset>
+        </div>
+        <button data-ng-click="addOther()" type="button" class="button button-small">Add</button>
+    </div>
+<!--
+    <label for="travel" data-ng-class="{'error': eventsForm.travel.$dirty && eventsForm.travel.$invalid}">Travel </label>
+    <input type="number"  id="travel" min="0" name="travel" data-ng-required="true" data-ng-model="formdata.finance.travel">
+    <br>
+
+    <label for="food" data-ng-class="{'error': eventsForm.food.$dirty && eventsForm.food.$invalid}">Food  </label>
+    <input type="number" data-ng-label="Food" id="food" min="0" name="food" data-ng-required="true" data-ng-model="formdata.finance.food">
+    <br>
+
+    <label for="food" data-ng-class="{'error': eventsForm.stay.$dirty && eventsForm.stay.$invalid}">Stay</label>
+    <input type="number"  id="Stay" min="0" name="stay" data-ng-required="true" data-ng-model="formdata.finance.stay">
+    <br>
+-->
+
+    <fieldset>
+      <label for="income" data-ng-class="{'error' : eventsForm.income.$dirty && eventsForm.income.$invalid}">Income</label>
+      <input type="number"  name="income" id="income" data-ng-model="formdata.finance.income" data-ng-required="true" min="0">
+      <br>
+
+      <label for="expenditure" data-ng-class="{'error' : eventsForm.expenditure.$dirty && eventsForm.expenditure.$invalid}">Expenditure</label>
+      <input type="number" name="expenditure" id="expenditure" data-ng-model="formdata.finance.expenditure" data-ng-required="true" min="0">
+      <br>
+
+      <label for="profit" data-ng-class="{'error': eventsForm.profit.$dirty && eventsForm.profit.$invalid}">Profit</label>
+      <input type="number"  name="profit" id="profit" data-ng-model="formdata.finance.profit" data-ng-required="true" min="0">
+      <br>
+    </fieldset>
+
+    <input data-ng-class="{'button-primary':eventsForm.$valid, 'disabled': eventsForm.$invalid}" ng-disabled="eventsForm.$invalid" type="submit">
+
+  </form>
+
+  <!--SCRIPTS-->
+  <script src="/bower_components/angular/angular.min.js"></script>
+
+   <!-- TODO: Add Missing File -->
+  <script src="javascript/proposal-form-online.js"></script>
+  <!--SCRIPTS END-->
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Registration </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/angular-fancy-modal/dist/angular-fancy-modal.min.css">
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="RegistrationCtrl">
+    <div class="row">
+        <div class="column column-40">
+            <input type="search" ng-model="id" /> 
+        </div>
+        <div class="column column-10">
+            <button ng-click="find(id)"> Login </button>
+        </div>
+        <div class="column column-50">
+            <pre ng-if="participant != null">
+                {{ participant._id }}
+                {{ participant.name }}
+                {{ participant.events }}
+            </pre>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <section ng-form="reg" id="register" ng-if="participant != null">
+        <h2 class="black"> Register for Events </h2>
+
+        <div class="row">
+            <div class="column column-40" >
+            <input type="search" ng-model="searchQuery.$" placeholder="search query" value="" />
+            </div>
+            <div class="column column-10">
+                <select ng-model="searchQuery.subCategory" ng-options="val for val in eventCategories">
+                </select>
+            </div>
+            <div class="column column-10" >
+            <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="column column-30" >
+            <table>
+                <tr ng-repeat="e in eventData | filter: searchQuery | limitTo: searchLimit">
+
+                    <td ng-bind="e.name"></td>
+                    <td> <span> {{ e.organization.join(',') }} </span> </td>
+                    <td ng-bind="e.subCategory"></td>
+                    <td ng-bind="e.participationFee"></td>
+                    <td> <button class="button button-primary" ng-click="addEvent(e.name, e.participationFee)" ng-disabled="isAdded(e.name)"> &gt; </button> </td>
+
+                </tr>
+            </table>
+            </div>
+
+            <div class="column column-30">
+            <table>
+                <tr ng-repeat = "event in events">
+                <td> {{ event.name }}</td>
+                <td> {{ event.price }}  </td>
+                <td>  <button class="button button-primary" ng-click="deleteEvent($index)"> x </button></td>
+                </tr>
+                <tr> <td> Total </td> <td>{{ computeSubTotal()   }}</td> 
+                <td> <button class="button blackbutton" ng-click="submit()"> Checkout </button> </td> </tr>
+            </table>
+            </div>
+        </div>
+        
+        </section>
+
+    </div>
+  </div>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/angular-fancy-modal/dist/angular-fancy-modal.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+
+  <script>
+
+  var app = angular.module('app', ['vesparny.fancyModal']);
+    app.controller('RegistrationCtrl', ['$scope', '$http', function ($scope, $http) 
+    {
+        $http.defaults.headers.common['Accept'] = 'application/json';
+        $scope.searchLimit = 5;
+        
+
+        (function ()
+        {
+            $http.get('/api/events/list').then(onSuccess, onFailure);
+
+            function onSuccess (res)
+            {
+                $scope.eventData = res.data.events;
+                $scope.eventCategories = ["online", "chemical/bio", "informals", null, "builtrix", "applied engineering", "bits and bytes", "circuitrix", "quiz", "robotics", "debate - discussion"];
+                
+            }
+            function onFailure (res)
+            {
+                toastr["error"]("Please check your internet connection.");
+            }
+        })();
+
+        
+
+        $scope.participant = null;
+        $scope.find = function(id)
+        {
+            $http.get('self/participant?id=' + encodeURIComponent(id)).then(onSuccess, onFailure);
+            function onSuccess(response)
+            {
+                console.log(response)
+                $scope.participant = response.data.participant;
+                $scope.participant.events = response.data.events;
+            }
+
+            function onFailure(response)
+            {
+                console.log(response);
+            }
+        }
+
+        $scope.events = [];
+        $scope.addEvent = function(name, price) 
+        {
+            $scope.events.push({ name: name, price: price });
+        }
+
+        $scope.deleteEvent = function(index) 
+        {
+            $scope.events.splice(index, 1);
+        }
+
+        $scope.computeSubTotal = function()
+        {
+            if ($scope.events.length == 0)
+            {
+                return 0;
+            }
+            return $scope.events.map(function(e){return e.price}).reduce(function(a,b){return a+b;});
+        }
+
+        $scope.isAdded = function(name)
+        {
+            if ($scope.events == null || $scope.participant.events == null)
+            {
+                return true;
+            }
+            var isCurrent = $scope.events.filter(function (e) { return e.name == name }).length != 0;
+            var isPrevious = $scope.participant.events.filter(function (eId) { return eId == name }).length != 0;
+            console.log(name, isCurrent, isPrevious)
+            return isCurrent || isPrevious;
+        }
+
+        var invalid = function()
+        {
+            /*
+                because you can never be too paranoid.
+            */
+            var temp = $scope.events;
+            var alreadyReg = $scope.participant.events;
+            console.log($scope.events);
+            if(!temp.length){
+                toastr["error"]("Please select atleast one event.", "No event selected!");
+                return true;
+            }
+            for (var i = 0; i < temp.length; i++) {
+                for (var j = i + 1; j < temp.length; j++) {
+                    if (temp[i].name == temp[j].name) {
+                        toastr["error"]("The event list contains duplicate entry! Please correct that and retry submitting the form.", "Duplicate Error!");
+                        return true;
+                    }
+                }
+            }
+            if($scope.participant.events){
+
+                for (var i = 0; i < temp.length; i++) {
+                    for (var j = 0; j < alreadyReg.length; j++) {
+                        if (temp[i].name == alreadyReg[j]) {
+                            toastr["error"]("There's an event already registered! Please delete that and retry submitting the form.", "Duplicate Error!");
+                            return true;
+                        }
+                    }
+                }
+
+            }
+            return false;
+       }
+        $scope.submit = function() 
+        {
+            if(invalid())
+            {
+                return;
+            }
+
+            var payload = 
+            {
+                participantId: $scope.participant._id,
+                payment: { paymentType: 'card' },
+                eventIds: $scope.events.map(function(event) { return event.name; })
+            };
+
+            $http.post('self/register', payload)
+            .then(onSuccess, onFailure);
+
+            function onSuccess(response)
+            { 
+                toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Registration Successful!")
+            }
+            function onFailure(response)
+            {
+                console.log(response);
+                toastr["error"]("Please check your internet connection.","Registration failed!");
+            }
+      }
+        
+    }]);
+  </script>
+</body>

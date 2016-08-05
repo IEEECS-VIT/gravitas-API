@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> External Participants </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <style media="screen">
+      input[disabled]{
+          background-color: #d1d1d1 !important;
+          text-decoration-color: black!important;
+      }
+  </style>
+  <!--STYLES END-->
+
+</head>
+
+<body>
+<script>
+  var checkLoginState = function () {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  var statusChangeCallback = function (response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+
+    if (response.status === 'connected') {
+      // Logged into app and Facebook.
+      main();
+    } else if (response.status === 'not_authorized') {
+      // empty
+    } else {
+      // empty
+    }
+  }
+
+  var main = function () {
+    var options = { locale: 'en_US', fields: 'name, email, gender' };
+    var onProfileFetch = function(response) {
+      console.log(response);
+      autoFill(response);
+      alert('Thanks for logging in, ' + response.name + '!');
+    }
+    FB.api('/me', options, onProfileFetch);
+
+  }
+
+  var autoFill = function (res) {
+      var email = document.getElementById('email');
+      email.value = res.email;
+      email.setAttribute('readonly','true');
+      var name = document.getElementById('fullName');
+      name.value = res.name;
+      name.setAttribute('readonly','');
+      document.getElementById('gender-'+res.gender).checked = true;
+      res.gender == 'male' ? document.getElementById('gender-female').setAttribute('disabled','') : document.getElementById('gender-male').setAttribute('disabled','')
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '543287339186091',
+      xfbml      : true,
+      version    : 'v2.6'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+  <div class="container">
+    <div class="row">
+      <div class="column column-offset-10 column-80">
+      <h1> External Participants Registration </h1>
+
+        <label class="inline">Already registered?
+            <a class="button" href="/">Login</a>
+        </label>
+        <label class="Inline">  Want to register with Facebook -
+            <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+        </label>
+
+
+      <form name="registerForm" id="registerForm" action="" method="post" >
+
+        <fieldset>
+        <div class="row">
+          <span class="column column-20"><label for="fullName">Full Name</label></span>
+          <span class="column column-80"><input type="text" id="fullName" name="fullName" required="required" /></span>
+        </div>
+
+        <div class="row">
+          <span class="column column-20"><label for="email">Email</label></span>
+          <span class="column column-80"><input type="email" id="email" name="email" required="required" /></span>
+        </div>
+
+        <div class="row">
+          <span class="column column-20"><label for="institute">Institute</label></span>
+          <span class="column column-80"><input type="text" id="institute" name="institute" required="required" /></span>
+        </div>
+
+        <div class="row">
+          <span class="column column-20"><label for="gender">Gender</label></span> <br>
+          <span class="column column-40">
+            <label for="gender-male"> <input type="radio" id="gender-male" name="gender" value="male"  required="required" /> Male </label>
+
+          </span>
+          <span class="column column-40">
+            <label for="gender-female"> <input type="radio" id="gender-female" name="gender" value="female"  required="required" /> Female </label>
+          </span>
+        </div>
+
+        <div class="row">
+          <span class="column column-20"><label for="username">Username</label></span>
+          <span class="column column-80"><input type="text" id="username" name="username" required="required" /></span>
+        </div>
+
+        <div class="row">
+          <span class="column column-20"><label for="password">Password</label></span>
+          <span class="column column-80"><input type="password" id="password" name="password" required="required"  /></span>
+        </div>
+
+        </fieldset>
+
+        <input class="button button-outline" type="submit" name="submit" value="submit" />
+      </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

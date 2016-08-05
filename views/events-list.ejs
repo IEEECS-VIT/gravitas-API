@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Events | Edit Event </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="OrganizerCtrl">
+      <div class="row">
+          <div class="column column-80">
+              <h1 class="black"><b>Organizer Portal - </b></h1>
+          </div>
+        <div class="column">
+            <a class="button blackbutton" href="/organizer">Home</a>
+            <a class="button" href="/logout">Logout</a> </button>
+        </div>
+    </div>
+    <section ng-form="events" id="events">
+        <button class="button blackbutton" ng-click="confirm('refresh the data?', init);" > New </button>
+        <br>
+      <h2 class="black"> Search for Events </h2>
+
+      <div class="row">
+        <div class="column column-40" >
+          <input type="search" ng-model="searchQuery.$" placeholder="search query" value="" />
+        </div>
+        <div class="column column-10">
+            <select ng-model="searchQuery.subCategory" ng-options="val for val in eventCategories">
+            </select>
+        </div>
+        <div class="column column-10" >
+          <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="column column-60" >
+          <form name="eventsEdit" action="/events/edit" method="post" style="display:none;">
+            <input id="eventName" type="text" name="eventName" value="">
+          </form>
+          <table>
+            <tr ng-repeat="e in eventData | filter: searchQuery | limitTo:searchLimit">
+
+                <td ng-bind="e.name"></td>
+                <td ng-bind="e.category"></td>
+                <td> <span> {{ e.organization.join(',') }} </span> </td>
+                <td ng-bind="e.subCategory"></td>
+                <td ng-bind="e.participationFee"></td>
+                <td> <button class="button button-primary" ng-click="show(e.name);"> Show </button> </td>
+
+            </tr>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </div>
+  <script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('OrganizerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+
+      $scope.init = function(){
+          console.log("Init!");
+          $scope.searchQuery = '';
+          $scope.searchLimit = 5;
+          $scope.selectedEvent = null;
+          $scope.events = [];
+      }
+
+      $scope.init();
+
+      $scope.show = function(eventID){
+            document.getElementById('eventName').value = eventID;
+            document.forms['eventsEdit'].submit();
+
+/*          $http.get('/organizer/event/'+eventID)
+          .then(function success(response) {
+              $scope.selectedEvent = eventID;
+              var data = response.data.participantIds;
+              if(data.length){
+                  //.map(function(e){return e.participantId});
+                  $scope.eventParticipants = data;
+              }
+              window.location.href=('#list')
+            toastr["success"](eventID, "Event Found");
+            console.log(response.data);
+          },function error(response){
+              toastr["error"]("Please check your internet connection.","Event Not Found!");
+          });*/
+      }
+
+      $http.get('/api/events/list').then(function (res)
+      {
+        $scope.eventData = res.data.events;
+        $scope.eventCategories = ["online", "chemical/bio", "informals", null, "builtrix", "applied engineering", "bits and bytes", "circuitrix", "quiz", "robotics", "debate - discussion"];
+        $('chosen-select').chosen();
+      },
+      function (res)
+      {
+        toastr["error"]("Please check your internet connection and try again.");
+      })
+
+      $scope.confirm = function(m, cb){
+          var eventObj = arguments[2];
+          vex.dialog.confirm(
+          {
+              message: "Are you sure you want to "+m,
+              callback : function(value){
+                  if(value){
+                      eventObj ? cb(eventObj) : cb();
+                      $scope.$apply();
+                  }
+              },
+              buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, {
+                          text: 'Yes'
+                        }), $.extend({}, vex.dialog.buttons.NO, {
+                          text: 'No'
+                        })
+                    ]
+            }
+         );
+      }
+
+    }]);
+  </script>
+
+</body>
+
+</html>

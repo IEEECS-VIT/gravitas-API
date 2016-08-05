@@ -1,0 +1,394 @@
+
+    <!--
+        TODO: Add names, make fields dynamic, form validation,
+        build object of key: value pairs to be changed and submit via ajax.
+    -->
+    <!DOCTYPE html>
+    <html lang="en" ng-app="EditApp">
+
+    <head>
+      <title> Events Edit </title>
+
+      <!-- Viewport mobile tag for sensible mobile support -->
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+      <!--STYLES-->
+      <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+      <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+      <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+      <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+      <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+      <!--STYLES END-->
+
+
+      <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+      <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+      <script src="/bower_components/angular/angular.min.js"></script>
+      <script src="/bower_components/toastr/toastr.min.js"></script>
+      <style media="screen">
+          .blackbutton{
+              background-color: black;
+              border-color: black;
+          }
+          .black{
+              color:black;
+          }
+      </style>
+    </head>
+
+    <body ng-controller="EditCtrl">
+      <div class="container">
+        <div class="row">
+            <div class="column column-80">
+                <h1 class="black"><b>Events Portal - </b></h1>
+            </div>
+          <div class="column">
+              <a class="button blackbutton" href="/events">Home</a>
+              <a class="button" href="/logout">Logout</a> </button>
+          </div>
+      </div>
+        <div class="row" ng-if="event" >
+          <div ng-form="eventEditForm" class="column column-60 column-offset-20">
+            <h1>Events - Edit</h1>
+
+                    <section id="basics">
+                        <h2>Basics</h2>
+                          <label>
+                            Name: <span>{{ event._id }}</span>
+                          </label>
+                          <label>
+                            Category: <span> {{ event.category }} </span>
+                          </label>
+                          <label>
+                            SubCategory: <select name="event.subCategory" ng-model="event.subCategory" ng-options="val for val in eventSubCategories"></select>
+                          </label>
+                          <label>
+                            Duration: <input type="text" name="event.duration" ng-model="event.duration" />
+                          </label>
+                          <label>
+                            Description: <textarea type="text" ng-model="event.description"></textarea>
+                          </label>
+                          <label>
+                            Resource Person: <select name="event.resourcePerson" ng-model="event.resourcePerson" ng-options="val for val in resourcePersons"></select>
+                          </label>
+                          <label>
+                            Team: <input type="number" name="event.team" ng-model="event.team"/>
+                          </label>
+                      </section>
+
+                      <section id="coordinators">
+                        <div ng-repeat="val in event.coordinators">
+                          <h3>Coordinator {{ $index+1 }}</h3>
+                          <label>
+                            Name: <input type="text" ng-model="val.name"/>
+                          </label>
+                          <label>
+                            Registration Number: <input type="text" ng-model="val._id"/>
+                          </label>
+                          <label>
+                            Phone: <input type="tel" ng-model="val.phone"/>
+                          </label>
+                          <label>
+                            Email: <input type="text" ng-model="val.email"/>
+                          </label>
+                        </div>
+                      </section>
+
+                      <section id="faculty">
+                          <h3>Faculty</h3>
+                          <label>
+                            Name: <input type="text" ng-model="event.faculty.name"/>
+                          </label>
+                          <label>
+                            EMPID: <input type="text" ng-model="event.faculty._id"/>
+                          </label>
+                          <label>
+                            Phone: <input type="tel" ng-model="event.faculty.phone"/>
+                          </label>
+                          <label>
+                            Email: <input type="email" ng-model="event.faculty.email"/>
+                          </label>
+                          <label>
+                            School: <input type="text" ng-model="event.faculty.school"/>
+                          </label>
+                      </section>
+
+<!--
+
+["_id", "description", "resourcePerson", "duration", "category", "subCategory", "venue.requested.building", "venue.requested.requirement",
+"budget.purchase.tags", "budget.purchase.travel", "budget.purchase.misc", "budget.purchase.refreshment", "budget.purchase.materials", "budget.purchase.stationary", "budget.purchase.memento", "budget.total", "budget.sponsorship.expected",
+"coordinators.0.phone", "coordinators.0.reg_no", "coordinators.0._id", "coordinators.0.name", "coordinators.0.email", "team", "organization.0", "participation.expected.internal", "participation.expected.external", "participation.fee"];
+
+
+description: String,
+category: String,
+subCategory: String,
+resourcePerson: String,
+duration: String,
+team: Number, //
+
+organization: [String],
+
+-->
+
+                <section id="coordinators">
+                  <h3>Organisation(s)</h3>
+                  <h2> Club|Chapter Names </h2>
+                  <div ng-repeat="val in event.organization">
+                    <label>
+                      {{ $index+1 }}: <input type="text" ng-model="val"/>
+                    </label>
+                  </div>
+                </section>
+
+                <section id="participation">
+                  <h3>Participation Expected</h3>
+                  <label>
+                    Internal: <input type="number" min="0" required ng-model="event.participation.expected.internal"/>
+                  </label>
+                  <label>
+                    External: <input type="number" min="0" required ng-model="event.participation.expected.external"/>
+                  </label>
+                </section>
+
+                <section id="venue">
+                  <h3>Venue Request</h3>
+                  <label>
+                    Building: <input type="text" ng-model="event.venue.requested.building"/>
+                  </label>
+                  <label>
+                    Requirement: <input type="text" ng-model="event.venue.requested.requirement"/>
+                  </label>
+                </section>
+
+
+                <section id="budget">
+                    <section id="misc">
+                      <label>
+                        Rules & Regulation: <textarea type="text" ng-model="event.rules"></textarea>
+                      </label>
+                      <label>
+                        Round wise description: <textarea type="text" ng-model="event.roundDescription"></textarea>
+                      </label>
+                      <label>
+                        Judging criteria: <textarea type="text" ng-model="event.judgingCriteria"></textarea>
+                      </label>
+                    </section>
+                    <h3>Budget</h3>
+                    <!--
+                    <h4>Certificates</h4>
+                    <dl>
+                        <dt> Coordinator </dt> <dd><input type="number" ng-model="formdata.finance.budget.certificates.coordinator" /></dd><br/>
+                        <dt> Participant </dt> <dd><input type="number" ng-model="formdata.finance.budget.certificates.participant" /></dd><br/>
+                        <dt> Winner </dt> <dd><input type="number" ng-model="formdata.finance.budget.certificates.winner" /></dd><br/>
+                        <dt> Total </dt> <dd><input type="number" ng-model="formdata.finance.budget.certificates.total" /></dd><br/>
+                        <dt> Cost </dt> <dd><input type="number" ng-model="formdata.finance.budget.certificates.cost" /></dd><br/>
+                    </dl>-->
+                    <label>
+                      Description: <textarea type="text" ng-model="event.budget.purchase.description"></textarea>
+                    </label>
+                    <label>
+                      Tags:<input type="number" min="0" required  ng-model="event.budget.purchase.tags" />
+                    </label>
+                    <label>
+                      Honorarium:<input type="number" min="0" required ng-model="event.budget.purchase.honorarium" />
+                    </label>
+                    <label>
+                      Major:<input type="number" min="0" required ng-model="event.budget.purchase.major" />
+                    </label>
+                    <label>
+                      Certificates:<input type="number" min="0" required ng-model="event.budget.purchase.certificates" />
+                    </label>
+                    <label>
+                      Travel:<input type="number" min="0" required ng-model="event.budget.purchase.travel" />
+                    </label>
+                    <label>
+                      Misc:<input type="number" min="0" required ng-model="event.budget.purchase.misc" />
+                    </label>
+                    <label>
+                      Refreshment:<input type="number" min="0" required ng-model="event.budget.purchase.refreshment" />
+                    </label>
+                    <label>
+                      Materials:<input type="text" required ng-model="event.budget.purchase.materials" />
+                    </label>
+                    <label>
+                      Stationary:<input type="number" min="0" required ng-model="event.budget.purchase.stationary" />
+                    </label>
+                    <label>
+                      Memento:<input type="number" min="0" required ng-model="event.budget.purchase.memento" />
+                    </label>
+
+                    <label>
+                      <h4>Total</h4>
+                      <input type="number" min="0" required ng-model="event.budget.total" />
+                    </label>
+
+
+                    <h4>Sponsorship</h4>
+                    <label>
+                      Expected:<input type="number" min="0" required ng-model="event.budget.sponsorship.expected" />
+                    </label>
+
+                    <section id="prize">
+                      <h3>Prize</h3>
+                            <div ng-repeat="val in event.budget.prizes track by $index">
+                              <label>
+                                {{ $index+1 }}: <input min="0" type="number" ng-model="event.budget.prizes[$index]"/>
+                              </label>
+                            </div>
+                              <h4 class="black">
+                                Total Prize : {{ total() }}
+                              </h4>
+                    </section>
+
+                </section>
+                <button type="submit" ng-click="confirm('submit the edited data?', submit);" ng-disabled="eventEditForm.$invalid">Submit</button>
+                <button type="button" ng-click="show()">show</button>
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript">
+          angular.module('EditApp',[])
+          .controller('EditCtrl', function($scope, $http) {
+              //var payload = { id : }
+              $scope.getEventData = function(){
+                  $http.post("/events/eventData", {id:"<%- eventName %>"})
+                  .then(function(response){
+                    $scope.event = response.data.eventDetail[0];
+                    console.log("Success");
+                    console.log(JSON.stringify(response));
+                    $scope.event.budget.purchase.honorarium = 0;
+                    $scope.event.budget.purchase.certificates = 0;
+                    $scope.event.budget.purchase.major = 0;
+                  },function(response){
+                      console.log("Faliure");
+                      console.log(JSON.stringify(response));
+                  })
+              }
+
+              $scope.submit = function(){
+                $http.post('/events/edited', { "edited" : $scope.event })
+                .then(function(data){
+                  toastr["success"]("Event successfully updated!");
+                  console.log(data.data.updatedEvent);
+                  console.log(JSON.stringify(data.data.updatedEvent));
+                },
+                function(){
+                  toastr["error"]("Please check your internet connection.","Item Registration failed!");
+                })
+              }
+
+              $scope.total = function() {
+                  return $scope.event.budget.prizes.reduce(function(a,b){ return a + b },0)
+              }
+
+              $scope.confirm = function(m, cb){
+                  var eventObj = arguments[2];
+                  vex.dialog.confirm(
+                  {
+                      message: "Are you sure you want to "+m,
+                      callback : function(value){
+                          if(value){
+                              eventObj ? cb(eventObj) : cb();
+                              $scope.$apply();
+                          }
+                      },
+                      buttons: [
+                                $.extend({}, vex.dialog.buttons.YES, {
+                                  text: 'Yes'
+                                }), $.extend({}, vex.dialog.buttons.NO, {
+                                  text: 'No'
+                                })
+                            ]
+                    }
+                 );
+              }
+              $scope.show = function(){
+                console.log($scope);
+              }
+              $scope.getEventData();
+              $scope.resourcePersons = [null, 'External Professional', 'VIT Student', 'VIT Faculty', 'Internal', 'VIT Alumni'];
+              $scope.buildings = ['GDN', 'CDMM', 'MGR', 'TT', 'SJT', 'Others', 'SMV', "Main Foodys", "SJT Foodys", "CBMR", "Woodstock"];
+              $scope.requirements = ["Class", "Smart Class", "Gallery", "Rajaji Hall", "Ambedkar Auditorium", "Kamaraj Auditorium", "Anna Auditorium", "CS Hall", "Greenos", "Chenna Reddy Auditorium", "MB Basket Ball Court", "TT Basket Ball Court", "Volley Ball Court", "SJT Ground", "Parking Area in front of SJT", "SJT Parking Areas", "Computer Labs"];
+              $scope.eventSubCategories = ["Premium", "Builtrix", "Applied Engineering", "Bits and Bytes", "Circuitrix", "Quiz", "Robotics", "Speaking / Management", "Bio / Chemical", "Informal", "Online", "Workshop"];
+/*              $scope.event = {
+                "_id": "Gravitaspremier league",
+                "description": "Gravitas premier league is an online event where the participants are required to make their own cricket team by buying the players using the amount of money they will be given at the start. There are three rounds in this event and for qualifying from one round to the next, the participant has to win a certain number of matches. Winning or losing a match is purely based on an online simulation between the competing teams. The final round will be an online auction among the top ten teams.",
+                "resourcePerson": "null",
+                "faculty": {
+                  "phone": 9943640733,
+                  "school": "SCOPE",
+                  "_id": 10233,
+                  "name": "Some Faculty",
+                  "email": "a@gmail.com"
+                },
+                "duration": "5",
+                "category": "events",
+                "subCategory": "Online",
+                "venue": {
+                  "requested": {
+                    "building": "tt",
+                    "requirement": "class room"
+                  }
+                },
+                "budget": {
+                  "purchase": {
+                    "tags": 50,
+                    "travel": 0,
+                    "misc": 0,
+                    "refreshment": 0,
+                    "materials": 0,
+                    "stationary": 100,
+                    "memento": 0
+                  },
+                  "total": 0,
+                  "sponsorship": {
+                    "expected": 1000
+                  }
+                },
+                "coordinators": [
+                  {
+                    "phone": "9585581787",
+                    "reg_no": "15BIT0136",
+                    "_id": "15BIT0136",
+                    "name": "Vishwajeet singh",
+                    "email": "vishwajeetsinhjadeja4@gmail.com"
+                  }
+                ],
+                "team": 1,
+                "organization": [
+                  "IEEE-CS", "IEEECS"
+                ],
+                "participation": {
+                  "expected": {
+                    "internal": 700,
+                    "external": 200
+                  },
+                  "fee": 0
+                }
+              };*/
+
+          })
+
+          function getKeys(obj, val) {
+                var objects = [], name="";
+                for (var i in obj) {
+                    if (!obj.hasOwnProperty(i)) continue;
+                    if (typeof obj[i] == 'object') {
+                        name = val ? val+'.'+i : i
+                        objects = objects.concat(getKeys(obj[i], name));
+                    } else{
+                        name = val ? val+'.'+i : i
+                        objects.push(name);
+                    }
+                }
+            return objects;
+        }
+
+        var keys = ["_id", "description", "resourcePerson", "duration", "category", "subCategory", "venue.requested.building", "venue.requested.requirement", "budget.purchase.tags", "budget.purchase.travel", "budget.purchase.misc", "budget.purchase.refreshment", "budget.purchase.materials", "budget.purchase.stationary", "budget.purchase.memento", "budget.total", "budget.sponsorship.expected", "coordinators.0.phone", "coordinators.0.reg_no", "coordinators.0._id", "coordinators.0.name", "coordinators.0.email", "team", "organization.0", "participation.expected.internal", "participation.expected.external", "participation.fee"];
+      </script>
+    </body>
+
+    </html>

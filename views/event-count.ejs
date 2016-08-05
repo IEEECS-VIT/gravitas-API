@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Sales | count </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="OrganizerCtrl">
+      <div class="row">
+          <div class="column column-80">
+              <h1 class="black"><b>Registration Portal - </b></h1>
+          </div>
+        <div class="column">
+            <a class="button blackbutton" href="/registration">Home</a>
+            <a class="button" href="/logout">Logout</a> </button>
+        </div>
+    </div>
+
+    <button ng-click="refresh()" ng-disabled="refreshing"> Refresh Count </button>
+
+    <div class="row">
+      <div class="column column-50" >
+        <input type="search" ng-model="query.$" placeholder="search query" value="" />
+      </div>
+      <div class="column column-10" >
+        <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
+      </div>
+    </div>
+
+    <table>
+
+        <th>
+          <td> Count </td>
+        </th>
+
+        <tr ng-repeat="event in events|orderBy:'-count'|filter:query|limitTo:searchLimit">
+          <td ng-bind="event.name"> </td>
+          <td ng-bind="event.count"> </td>
+        </tr>
+    </table>
+
+</div>
+
+
+
+  <script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('OrganizerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $scope.events = [];
+      $scope.refreshing = false;
+      $scope.refresh = function()
+      {
+        $scope.refreshing = true;
+        $http.get('/api/events/count').then(success, failure);
+        function success (response)
+        {
+          $scope.events = response.data.counts;
+          $scope.refreshing = false;
+        }
+
+        function failure (response)
+        {
+          console.log(response);
+          $scope.refreshing = false;
+        }
+      }
+
+      $scope.refresh();
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+
+      $scope.query = '';
+      $scope.searchLimit = 5;
+
+    }]);
+  </script>
+
+</body>
+
+</html>

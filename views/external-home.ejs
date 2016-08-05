@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> External Participant </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/angular/angular.min.js"></script>
+
+
+
+</head>
+
+<body>
+
+  <div class="container" ng-controller="RegistrationCtrl">
+    <div class="row">
+      <div class="column column-80 column-offset-10">
+          <div class="row">
+              <div class="column column-80">
+                  <h1> External Participant </h1>
+              </div>
+              <div class="column">
+                  <a class="button" href="/logout">Logout</a> </button>
+              </div>
+          </div>
+
+        <% if (external.length == 0) { %>
+        <p> You haven't registered for any events. </p>
+        <% } else { %>
+
+        <h2> Registered Events (Unpaid)</h2>
+        <ul>
+          <% for (var i=0; i<external.length; i++) { %>
+            <% for(var j=0; j<external[i].eventIds.length; j++){    %>
+                    <li><%=external[i].eventIds[j]%></li>
+            <%  } %>
+          <% } %>
+        </ul>
+        <% } %>
+
+        <h2> Register for events </h2>
+        <div class="row">
+
+        <div class="column column-40">
+
+
+           <label ng-repeat="event in events">
+            {{ 'event' + ($index+1) }}.
+            <select ng-model="event.value" required="true">
+            <% for(var i=0; i<events.length; i++) { %>
+            <option value="<%= events[i]._id %>"> <%= events[i]._id %>  </option>
+              <% } %>
+            </select>
+             <button class="button button-outline" ng-click="deleteEvent($index)" ng-disabled="events.length == 1" > Delete </button>
+           </label>
+           <button class="button button-outline" ng-click="addEvent()" > Add </button>
+
+           <br>
+           <br>
+
+           <button class="button button-outline" ng-click="submit()" > Register </button>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var app = angular.module('app', []);
+    app.controller('RegistrationCtrl', ['$scope', '$http', function ($scope, $http) {
+
+
+      $scope.events = [{value: null}];
+      $scope.addEvent = function() {
+        $scope.events.push({ value: null });
+      }
+
+      $scope.deleteEvent = function(index) {
+        $scope.events.splice(index, 1);
+      }
+
+      var validate = function(){
+          for(var i=0; i<$scope.events.length; i++){
+              if($scope.events[i].value==null){
+                  alert("Please select an event for event"+(i+1));
+                  return false;
+              }
+          }
+          return true;
+      }
+
+      $scope.submit = function() {
+          if(!validate()){
+              return;
+          }
+         var payload = {
+           //participantId: $scope.participant._id,
+           eventIds: $scope.events.map(function(event) { return event.value; })
+         };
+         $http.post('/external/', payload)
+         .then(function success(response) {
+          alert('registered successfully !');
+        }, function error (response) {
+          console.log(JSON.stringify(response, null, 2))
+          alert('please check your internet connection.');
+        })
+      }
+    }]);
+  </script>
+
+</body>
+
+</html>

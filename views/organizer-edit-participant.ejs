@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Organizer | Edit Participant </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="OrganizerCtrl">
+      <div class="row">
+          <div class="column column-80">
+              <h1 class="black"><b>Organizer Portal - </b></h1>
+          </div>
+        <div class="column">
+            <a class="button blackbutton" href="/organizer">Home</a>
+            <a class="button" href="/logout">Logout</a> </button>
+        </div>
+    </div>
+    <div class="row">
+      <div class="column column-40" ng-form="find">
+          <section id="find">
+              <button class="button blackbutton" ng-click="confirm('refresh the data?', init);" > New </button>
+              <br>
+              <h2 class="black"> Find Participant </h2>
+
+              <label class="label-inline">
+                  Registration Number
+              </label>
+              <input type="text" name="id" id="id" ng-keypress="$event.keyCode==13 && find.$valid ? ( !found ? findParticipant() : editDetail() ) : null " required ng-model="participant._id" ng-blur="participant._id=participant._id.toUpperCase()" ng-change="participant._id=participant._id.toUpperCase()"/>
+              <button class="button button-outline" ng-disabled="found || find.id.$invalid" ng-click="findParticipant()" > Find </button>
+              <button ng-if="found" class="button button-outline" ng-disabled="!(found || find.id.$invalid)" ng-click="editDetail()" > Edit </button>
+          </section>
+      </div>
+      <div ng-form="detail" class="column column-40 column-offset-20"  ng-if="(found != null && created==false) || editParticipant">
+        <section id="details">
+          <h2> Participant Details </h2>
+          <label>
+            Name:
+            <input type="text" name="name" id="name" required ng-model="participant.name"/>
+          </label>
+          <label>
+            Phone:
+            <input type="text" name="phone" id="phone" required ng-model="participant.phone"/>
+          </label>
+          <label>
+            Email:
+            <input type="email" name="email" id="email" required ng-model="participant.email"/>
+          </label>
+          <label>
+            Room Number:
+            <input type="text" name="room" ng-keypress="$event.keyCode==13 && detail.$valid ? ( editParticipant ? updateParticipant() : createParticipant() ): null " id="room" required ng-model="participant.room"/>
+          </label>
+          <label>
+              Gender:
+              <small>Male </small><input type="radio" name="gender" value="male" id="male" ng-model="participant.gender"/>
+              <small>Female </small><input type="radio" name="gender" value="female" id="female" ng-model="participant.gender"/>
+          </label>
+          <label>
+              Tshirt Size:
+              <small>S </small><input type="radio" name="tshirtSize" value="S" id="tshirtSizeS" ng-model="participant.tShirtSize" />
+              <small>M </small><input type="radio" name="tshirtSize" value="M" id="tshirtSizeM" ng-model="participant.tShirtSize" />
+              <small>L </small><input type="radio" name="tshirtSize" value="L" id="tshirtSizeL" ng-model="participant.tShirtSize" />
+              <small>XL </small><input type="radio" name="tshirtSize" value="XL" id="tshirtSizeXL" ng-model="participant.tShirtSize" />
+              <small>XXL </small><input type="radio" name="tshirtSize" value="XXL" id="tshirtSizeXXL" ng-model="participant.tShirtSize" />
+          </label>
+          <button ng-if="!editParticipant" class="button button-outline" type="submit" ng-click="createParticipant()" ng-disabled="found || detail.$invalid" > Create Participant </button>
+          <button ng-if="editParticipant" class="button button-outline" type="submit" ng-click="updateParticipant()" ng-disabled="detail.$invalid" > Update Participant </button>
+        </section>
+      </div>
+
+      <div class="column column-40 column-offset-20"  ng-if="created && !editParticipant">
+        <section id="details">
+          <h2 class="black"> Participant Details </h2>
+          <label> Name: {{participant.name}}</label>
+          <label> Phone: {{participant.phone}} </label>
+          <label> Email: {{participant.email}} </label>
+          <label> Room Number: {{participant.room}} </label>
+          <label> Gender: {{participant.gender}} </label>
+          <label> Tshirt Size: {{participant.tShirtSize}}</label>
+        </section>
+      </div>
+  </div>
+  <div ng-if="created" class="row">
+    <div class="column column-80 column-offset-10" >
+        <h2 class="black">Registrations</h2>
+      <table>
+          <thead class="black">
+              <tr>
+                  <th>
+                      Event Name
+                  </th>
+                  <th>
+                      Receipt ID
+                  </th>
+                  <th>
+                      Delete
+                  </th>
+              </tr>
+          </thead>
+        <tr ng-repeat="e in participant.events">
+
+            <td ng-bind="e.name"></td>
+            <td ng-bind="e._id"></td>
+            <td>
+                <button class="button button-primary" ng-click="confirm('delete this registration?', deleteReg, e);"> Delete </button>
+            </td>
+
+        </tr>
+        <tr class="black">
+            <td>
+                Total Event Registrations
+            </td>
+            <td>
+                {{ participant.events.length }}
+            </td>
+        </tr>
+      </table>
+      <span ng-if="!eventParticipants.length" class="black">No registrations so far!<br>Good Luck!</span>
+    </div>
+
+
+  <script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('OrganizerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+      $scope.init = function(){
+          console.log("Init!");
+          $scope.participant = {
+            _id: null,
+            name: null,
+            phone: null,
+            email: null,
+            room: null,
+            gender: null,
+            payment : {
+                paymentType:'cash',
+                transactionId:null
+            }
+          };
+          $scope.created = false;
+          $scope.found = null;
+          $scope.editParticipant = false;
+      }
+      $scope.init();
+
+      $scope.editDetail = function(){
+          $scope.editParticipant = true;
+          toastr["info"]($scope.participant._id+"\n"+$scope.participant.name, "Edit Participant Details")
+      }
+
+      $scope.findParticipant = function() {
+        var params = { id: $scope.participant._id };
+        $http.get('/organizer/participant', { params: params })
+        .then(function success(response) {
+          $scope.participant = {
+            _id: response.data.participant._id,
+            name: response.data.participant.name,
+            phone : response.data.participant.phone,
+            email : response.data.participant.email,
+            gender : response.data.participant.gender,
+            room : response.data.participant.room,
+            tShirtSize : response.data.participant.tShirtSize,
+            events : getEventID(response.data.events)
+          };
+          $scope.found = true;
+          $scope.created = true;
+            toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Participant Found")
+          console.log(response.data);
+        },function error(response){
+          $scope.found = false;
+          $scope.participant.gender="male";
+          $scope.participant.tShirtSize="S";
+          toastr["error"]("Enter Participant details","Participant Not Found!");
+        });
+      };
+
+      var getEventID = function (obj) {
+          res = [];
+          for(var i=0; i<obj.length; i++){
+              for(var j=0; j<obj[i].eventIds.length; j++){
+                  res.push({
+                          name : obj[i].eventIds[j],
+                          _id : obj[i]._id
+                      });
+              }
+          }
+          return res;
+      }
+
+      $scope.createParticipant = function() {
+        $http.post('/organizer/participant', $scope.participant)
+        .then(function success(response) {
+          toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Participant created!")
+          $scope.found = true;
+          $scope.created = true;
+        }, function error (response) {
+          console.log(response)
+          toastr["error"]("Please check your internet connection.","Participant could not be created!");
+        })
+      };
+
+      $scope.deleteReg = function(receipt){
+
+          var data = {
+              _id:  receipt._id,
+              eventID: receipt.name,
+              participantId: $scope.participant._id
+          }
+          $http.post('/organizer/deleteEvent', data)
+          .then(function success(response) {
+            toastr["success"](receipt.name+"\n"+$scope.participantId, "Registration deleted succcessfully!");
+            $scope.findParticipant();
+            console.log(data);
+          }, function error (response) {
+            console.log(response)
+            toastr["error"]("Please check your internet connection.","Registration could not be deleted!");
+          })
+
+      }
+
+      $scope.updateParticipant = function() {
+          $http.post('/organizer/updateParticipant', $scope.participant)
+          .then(function success(response){
+              toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Participant details updated!")
+              $scope.found = true;
+              $scope.created = true;
+              $scope.editParticipant = false;
+          }, function error (response) {
+            console.log(response)
+            toastr["error"]("Please check your internet connection.","Participant details could not be updated!");
+          })
+        };
+
+        $scope.confirm = function(m, cb){
+            var eventObj = arguments[2];
+            vex.dialog.confirm(
+            {
+                message: "Are you sure you want to "+m,
+                callback : function(value){
+                    if(value){
+                        eventObj ? cb(eventObj) : cb();
+                        $scope.$apply();
+                    }
+                },
+                buttons: [
+                          $.extend({}, vex.dialog.buttons.YES, {
+                            text: 'Yes'
+                          }), $.extend({}, vex.dialog.buttons.NO, {
+                            text: 'No'
+                          })
+                      ]
+              }
+           );
+        }
+
+    }]);
+  </script>
+
+</body>
+
+</html>

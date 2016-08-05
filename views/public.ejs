@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Public | count </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="OrganizerCtrl">
+      <div class="row">
+          <div class="column column-80">
+              <h1 class="black"><b>Registrations Count- </b></h1>
+          </div>
+    </div>
+
+    <div class="row">
+      <div class="column column-50" >
+        <input type="search" ng-model="query.$" placeholder="search query" value="" />
+      </div>
+      <div class="column column-10" >
+        <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
+      </div>
+    </div>
+
+    <table>
+        <thead>
+          <th> Event </th>
+          <th> Registration Count </th>
+          <th> Remaining </th>
+        </thead>
+
+        <tr ng-repeat="event in count|orderBy:'-count'|filter:query|limitTo:searchLimit">
+          <td ng-bind="event.name"> </td>
+          <td ng-bind="event.count"> </td>
+          <td ng-bind="event.remaining"> </td>
+        </tr>
+    </table>
+
+</div>
+
+
+
+  <script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('OrganizerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $http.get('/api/events/remaining').then(success, failure);
+      function success (response)
+      {
+        console.log(response.data);
+        $scope.data = response.data;
+        $scope.parse();
+      }
+
+      $scope.parse = function(){
+        var obj = {};
+        $scope.count = $scope.data.count.map(function (e) { return { name: e._id, count: e.count };  });
+        $scope.remaining = $scope.data.remaining.forEach(function(e){
+                                      obj[e._id] = e.participation.expected.internal;
+                                  });
+
+        $scope.count.forEach(function(e){
+
+          e.remaining = obj[e.name] - e.count;
+        })
+      }
+
+      function failure (response)
+      {
+        console.log(response);
+      }
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+
+      $scope.query = '';
+      $scope.searchLimit = 5;
+
+    }]);
+  </script>
+
+</body>
+
+</html>

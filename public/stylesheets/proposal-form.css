@@ -1,0 +1,166 @@
+.button-small {
+  font-size: .8rem;
+  height: 2.8rem;
+  line-height: 2.8rem;
+  padding: 0 1.5rem;
+}
+.disabled {
+  background: #bbb;
+  color: #555;
+  border-color: #bbb;
+  outline: 0;
+}
+.disabled:hover {
+  color: #555;
+  border-color: #bbb;
+  outline: 0;
+  cursor: not-allowed;
+}
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: .9;
+    visibility: visible;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: .9;
+    visibility: visible;
+  }
+}
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: .9;
+    visibility: visible;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: .9;
+    visibility: visible;
+  }
+}
+@-moz-keyframes fadeOut {
+  0% {
+    opacity: .9;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: .9;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@-ms-keyframes fadeOut {
+  0% {
+    opacity: .9;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: .9;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.message-container {
+  position: fixed;
+  ;
+  top: 10px;
+}
+.message-box {
+  color: rgba(255, 255, 255, 0.87);
+  padding: 10px;
+  opacity: 0.9;
+  margin: 10px;
+  background-color: #323232;
+  border-radius: 2px;
+  -moz-animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+  -ms-animation-duration: .5s;
+  animation-duration: .5s;
+  -moz-animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  -ms-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+}
+.show {
+  -moz-animation-name: fadeIn;
+  -webkit-animation-name: fadeIn;
+  -ms-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+.hidden {
+  -moz-animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+  -ms-animation-name: fadeOut;
+  animation-name: fadeOut;
+  opacity: 0;
+}
+.error {
+  color: rgb(200, 100, 100);
+}
+label {
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-weight: normal;
+  float: left;
+  width: 50%;
+  clear: both;
+  line-height: 3, 8rem;
+}
+.radio-label {
+  float: none;
+}
+input[type='email'], input[type='number'], input[type='password'], input[type='search'], input[type='tel'], input[type='text'], input[type='url'], textarea, select {
+  width: 60%;
+  display: inline;
+  clear: both;
+}
+
+.radio-label, .radio-label input {
+  margin-bottom: 0;
+  font-size: 1.6rem;
+
+}
+@media (min-width: 40rem) {
+  label {
+    text-transform: capitalize;
+    font-variant: normal;
+    font-size: 1.4rem;
+    width: 22%;
+  }
+}

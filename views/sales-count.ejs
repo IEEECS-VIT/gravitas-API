@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Sales | count </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/chosen/chosen.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script>vex.defaultOptions.className = 'vex-theme-os';</script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+  <script src="/bower_components/chosen/chosen.jquery.js"></script>
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="OrganizerCtrl">
+      <div class="row">
+          <div class="column column-80">
+              <h1 class="black"><b>Sales Portal - </b></h1>
+          </div>
+        <div class="column">
+            <a class="button blackbutton" href="/sales">Home</a>
+            <a class="button" href="/logout">Logout</a> </button>
+        </div>
+    </div>
+
+    <section id="list">
+        <h2 class="black"> List of Participants </h2>
+        <div class="row">
+          <div class="column column-60">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    Total Registrations
+                  </th>
+                  <th>
+                    Total Fee
+                  </th>
+                </tr>
+              </thead>
+              <tr>
+                <td>
+                  <%= participantIds.length %>
+                </td>
+                <td>
+                  <%= participantIds.length * 399 %>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="column column-60" >
+            <table>
+                <thead class="black">
+                    <tr>
+                        <td>
+                            Registration Number
+                        </td>
+                    </tr>
+                </thead>
+                <% for(var i=0; i<participantIds.length; i++){ %>
+              <tr>
+                  <td><%=participantIds[i].participantId%></td>
+              </tr>
+              <%}%>
+            </table>
+          </div>
+        </div>
+    </section>
+  </div>
+
+
+  <script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('OrganizerCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+
+      $scope.init = function(){
+          console.log("Init!");
+          $scope.searchQuery = '';
+          $scope.searchLimit = 5;
+          $scope.selectedEvent = null;
+          $scope.eventParticipants = [];
+          $scope.events = [];
+      }
+
+      $scope.init();
+
+      $scope.show = function(eventID){
+          $scope.eventParticipants = [];
+          $http.get('/organizer/event/'+eventID)
+          .then(function success(response) {
+              $scope.selectedEvent = eventID;
+              var data = response.data.participantIds;
+              if(data.length){
+                  //.map(function(e){return e.participantId});
+                  $scope.eventParticipants = data;
+              }
+              window.location.href=('#list')
+            toastr["success"](eventID, "Event Found");
+            console.log(response.data);
+          },function error(response){
+              toastr["error"]("Please check your internet connection.","Event Not Found!");
+          });
+      }
+
+      $scope.deleteReg = function(receipt){
+
+          var data = {
+              _id:  receipt._id,
+              eventID: $scope.selectedEvent,
+              participantId: receipt.participantId
+          }
+          $http.post('/organizer/deleteEvent', data)
+          .then(function success(response) {
+            toastr["success"]($scope.selectedEvent+"\n"+receipt.participantId, "Registration deleted succcessfully!");
+            $scope.show($scope.selectedEvent);
+            console.log(data);
+          }, function error (response) {
+            console.log(response)
+            toastr["error"]("Please check your internet connection.","Registration couldnot be deleted!");
+          })
+
+      }
+
+      $http.get('/api/events/list').then(function (res)
+      {
+        $scope.eventData = res.data.events;
+        $scope.eventCategories = ["online", "chemical/bio", "informals", null, "builtrix", "applied engineering", "bits and bytes", "circuitrix", "quiz", "robotics", "debate - discussion"];
+        $('chosen-select').chosen();
+      },
+      function (res)
+      {
+        toastr["error"]("Please check your internet connection.");
+      })
+
+      $scope.confirm = function(m, cb){
+          var eventObj = arguments[2];
+          vex.dialog.confirm(
+          {
+              message: "Are you sure you want to "+m,
+              callback : function(value){
+                  if(value){
+                      eventObj ? cb(eventObj) : cb();
+                      $scope.$apply();
+                  }
+              },
+              buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, {
+                          text: 'Yes'
+                        }), $.extend({}, vex.dialog.buttons.NO, {
+                          text: 'No'
+                        })
+                    ]
+            }
+         );
+      }
+
+    }]);
+  </script>
+
+</body>
+
+</html>

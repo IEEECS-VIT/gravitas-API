@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> Sales </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <!--STYLES END-->
+
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="SalesCtrl">
+    <div class="row">
+        <div class="columns column-40">
+            <input ng-change="id=id.toUpperCase()" type="search" ng-model="id" /> <button class="button" ng-click="find(id)" ng-disabled="finding"> Find </button>
+        </div>
+        <div  class="columns column-40">
+        <section id="details">
+          <h2> Participant Details </h2>
+          <label>
+            Name:
+            <input type="text" name="name" id="name" required ng-model="participant.name" ng-disabled="found"/>
+          </label>
+          <label>
+            Phone:
+            <input type="text" name="phone" id="phone" required ng-model="participant.phone" ng-disabled="found" />
+          </label>
+          <label>
+            Email:
+            <input type="email" name="email" id="email" required ng-model="participant.email" ng-disabled="found" />
+          </label>
+          <label>
+            Room Number:
+            <input type="text" name="room" id="room" required ng-model="participant.room" ng-disabled="found" />
+          </label>
+          <label>
+              Gender:
+              <small>Male </small><input type="radio" name="gender" value="male" id="male" ng-model="participant.gender" ng-disabled="found" />
+              <small>Female </small><input type="radio" name="gender" value="female" id="female" ng-model="participant.gender" ng-disabled="found" />
+          </label>
+          <label>
+              Tshirt Size:
+              <small>S </small><input type="radio" name="tshirtSize" value="S" id="tshirtSizeS" ng-model="participant.tShirtSize" ng-disabled="found" />
+              <small>M </small><input type="radio" name="tshirtSize" value="M" id="tshirtSizeM" ng-model="participant.tShirtSize" ng-disabled="found" />
+              <small>L </small><input type="radio" name="tshirtSize" value="L" id="tshirtSizeL" ng-model="participant.tShirtSize" ng-disabled="found" />
+              <small>XL </small><input type="radio" name="tshirtSize" value="XL" id="tshirtSizeXL" ng-model="participant.tShirtSize" ng-disabled="found" />
+              <small>XXL </small><input type="radio" name="tshirtSize" value="XXL" id="tshirtSizeXXL" ng-model="participant.tShirtSize" ng-disabled="found" />
+          </label>
+          <button class="button" type="submit" ng-click="createParticipant()" ng-disabled="found || detail.$invalid || creating"  > Create Participant </button>
+        </section>
+      </div>
+    </div>
+
+    <button ng-click="submit()" ng-disabled="buying || (!found && !created)"> Buy Tshirt ! </button>
+  </div>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+
+  <script>
+
+  toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('SalesCtrl', ['$scope', '$http', function ($scope, $http)
+    {
+        $http.defaults.headers.common['Accept'] = 'application/json';
+        $scope.reset = function( ) {
+            $scope.found = false;
+            $scope.finding = false;
+            $scope.creating = false;
+            $scope.buying = false;
+            $scope.created = false;
+            $scope.id = null;
+            $scope.participant =
+                {
+                    _id: null,
+                    name: null,
+                    phone: null,
+                    email: null,
+                    room: null,
+                    gender: null,
+                    tshirtSize: null
+                };
+        }
+        $scope.reset ();
+        $scope.find = function(id)
+        {
+            $scope.finding = true;
+            $http.get('participant?id=' + encodeURIComponent(id.toUpperCase())).then(onSuccess, onFailure);
+            function onSuccess(response)
+            {
+                console.log(response)
+                $scope.participant = response.data;
+                toastr["success"]("Participant Found");
+                $scope.found = true;
+                $scope.finding =false;
+            }
+
+            function onFailure(response)
+            {
+                console.log(response);
+                toastr["error"]("Enter Participant details","Participant Not Found!");
+                $scope.found = false;
+                $scope.created = false;
+                $scope.finding = false;
+                $scope.participant =
+                {
+                    _id: id,
+                    name: null,
+                    phone: null,
+                    email: null,
+                    room: null,
+                    gender: null,
+                    tshirtSize: null
+                };
+            }
+        }
+
+        $scope.createParticipant = function()
+        {
+            $scope.creating = true;
+            $http.post('participant', $scope.participant)
+            .then(success, error)
+
+            function success(response)
+            {
+                $scope.participant = response.data.participant;
+                console.log(response)
+                toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Participant created!")
+                $scope.found = true;
+                $scope.created = true;
+                $scope.creating = false;
+            }
+
+            function error (response)
+            {
+                console.log(response)
+                $scope.creating = false;
+                toastr["error"]("Please check your internet connection.","Participant could not be created!");
+            }
+        };
+
+
+        $scope.submit = function()
+        {
+
+            var payload =
+            {
+                participantId: $scope.participant._id,
+                itemName: 'tshirt',
+                cost: 399
+            };
+            $scope.buying = true;
+            $http.post('tshirt', payload)
+            .then(onSuccess, onFailure);
+
+            function onSuccess(response)
+            {
+                toastr["success"]($scope.participant._id+"\n"+$scope.participant.name, "Registration Successful!");
+                $scope.buying = false;
+                $scope.reset();
+            }
+            function onFailure(response)
+            {
+                console.log(response);
+                toastr["error"]("Please check your internet connection.","Registration failed!");
+                $scope.participant.gender="male";
+                $scope.participant.tShirtSize="S"
+                $scope.buying = false;
+                $scope.reset();
+            }
+        }
+
+    }]);
+  </script>
+</body>

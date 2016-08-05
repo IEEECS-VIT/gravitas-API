@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html ng-app="EventsApp">
+
+<head>
+    <title>Form</title>
+
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <!--STYLES-->
+    <link rel="stylesheet" href="bower_components/ng-materialize/dist/ng-materialize.min.css">
+    <link rel="stylesheet" href="bower_components/waves/dist/waves.min.css">
+<style>
+.material-icons{
+cursor: pointer;
+}
+</style>
+    <!--STYLES END-->
+</head>
+
+<body ng-controller="FormCtrl">
+
+    <div class="container">
+        <form class="card-panel hoverable" id="eventsForm" name="eventsForm" novalidate="" ng-submit="sub()">
+            <div class="row">
+                <div class="col m10 offset-m1 s12">
+                    <h1 class="text-center">Events Form</h1>
+
+
+                    <h4>Event Details</h4>
+
+
+                    <div class="row">
+                        <div class=" col s12 m5">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Event Name" id="name" name="name" ng-model="formdata.event.name" ng-required="true"
+                                type="text">
+
+                                <div class="field-hint" ng-messages="eventsForm.name.$error" ng-show="eventsForm.name.$dirty && eventsForm.name.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col s12 m5 offset-m2">
+                            <div class="input-field">
+                                <select class="browser-default" ng-model="formdata.event.type" ng-required="true" floating-label="Event Type" id="eventType"
+                                name="eventType">
+                                    <option disabled selected value="">
+                                    </option>
+
+                                    <option disabled selected value="">
+                                        Choose your event type
+                                    </option>
+
+                                    <option value="bioxyn">
+                                        Bioxyn
+                                    </option>
+
+                                    <option value="circuitrix">
+                                        Circuitrix
+                                    </option>
+
+                                    <option value="school">
+                                        School
+                                    </option>
+
+                                    <option value="applied">
+                                        Applied
+                                    </option>
+
+                                    <option value="builtrix">
+                                        Builtrix
+                                    </option>
+
+                                    <option value="online">
+                                        Online
+                                    </option>
+
+                                    <option value="workshop">
+                                        Workshop
+                                    </option>
+
+                                    <option value="premium">
+                                        Premium
+                                    </option>
+
+                                    <option value="bits">
+                                        Bits
+                                    </option>
+
+                                    <option value="robomaina">
+                                        Robomania
+                                    </option>
+
+                                    <option value="manage">
+                                        Manage
+                                    </option>
+
+                                    <option value="quiz">
+                                        Quiz
+                                    </option>
+                                </select>
+
+                                <div class="field-hint" ng-messages="eventsForm.eventType.$error" ng-show="eventsForm.eventType.$dirty&&eventsForm.eventType.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class=" col s12 m5">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Expected Internal Participants" id="expIn" name="expIn" ng-model="formdata.expIn"
+                                ng-required="true" type="number" min='0'>
+
+                                <div class="field-hint" ng-messages="eventsForm.expIn.$error" ng-show="eventsForm.expIn.$dirty && eventsForm.expIn.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                    <div ng-message="min">
+                                        This field can't be negative.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col s12 m5 offset-m2">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Expected External Participants" id="expEx" name="expEx" ng-model="formdata.expEx"
+                                min='0' ng-required="true" type="number">
+
+                                <div class="field-hint" ng-messages="eventsForm.expEx.$error" ng-show="eventsForm.expEx.$dirty && eventsForm.expEx.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                    <div ng-message="min">
+                                        This field can't be negative.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Faculty Coordinator Details</h4>
+
+
+                    <div class="row">
+                        <div class=" col s12 m5">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Name" id="fName" name="fName" ng-model="formdata.faculty.name"
+                                ng-required="true" type="text">
+
+                                <div class="field-hint" ng-messages="eventsForm.fName.$error" ng-show="eventsForm.fName.$dirty && eventsForm.fName.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class=" col s12 m5 offset-m2">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Name" id="fSchool" name="fSchool" ng-model="formdata.faculty.school"
+                                ng-required="true" type="text">
+
+                                <div class="field-hint" ng-messages="eventsForm.fSchool.$error" ng-show="eventsForm.fSchool.$dirty && eventsForm.fSchool.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class=" col s12 m5">
+                            <div class="input-field">
+                                <input class="validate" floating-label="EMPID" id="fempid" name="fempid" ng-model="formdata.faculty.empid"
+                                ng-required="true" type="number">
+
+                                <div class="field-hint" ng-messages="eventsForm.fempid.$error" ng-show="eventsForm.fempid.$dirty && eventsForm.fempid.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class=" col s12 m5 offset-m2">
+                            <div class="input-field">
+                                <input class="validate" floating-label="Email" id="fEmail" name="fEmail" ng-model="formdata.faculty.email"
+                                ng-required="true" type="email">
+
+                                <div class="field-hint" ng-messages="eventsForm.fEmail.$error" ng-show="eventsForm.fEmail.$dirty && eventsForm.fEmail.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                    <div ng-message="email">
+                                        Please provide a valid email.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s12 m5">
+                            <div class="input-field">
+                                <input character-counter="10" class="validate" floating-label="Phone Number" id="fNo" name="fNo" ng-maxlength="10" ng-minlength="10"
+                                ng-model="formdata.faculty.phone" ng-pattern="/^[0-9]*$/" ng-required="true"
+                                type="tel">
+
+                                <div class="field-hint" ng-messages="eventsForm.fNo.$error" ng-show="eventsForm.fNo.$dirty && eventsForm.fNo.$invalid">
+                                    <div ng-message="required">
+                                        This is required field.
+                                    </div>
+                                    <div ng-message="pattern">
+                                        Please provide a valid phone number.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <div class="input-field">
+                                    <h5>Organization</h5>
+                                    <input id="chap" name="org" value="chap" ng-model="org" ng-required="true" type="radio">
+                                    <label for="chap">Single Chapter</label>
+                                    <br>
+                                    <input id="club" name="org" value="club" ng-model="org" ng-required="true" type="radio">
+                                    <label for="club">Single Club</label>
+                                    <br><!--
+                                    <input id="ind" name="org" value="Individual" ng-model="org" ng-required="true" type="radio">
+                                    <label for="ind">Individual</label>
+                                    <div ng-hide="true" ng-if="org=='Individual'" ng-init="formdata.event.org=['Individual']"></div>
+                                    <br>-->
+                                    <input id="coll" name="org" value="coll" ng-model="org" ng-required="true" type="radio">
+                                    <label for="coll">Collaboration</label>
+
+                                    <div class="field-hint" ng-messages="org.$error" ng-show="org.$dirty && org.$invalid">
+                                        <div ng-message="required">
+                                            This is required field.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s12 m6" ng-if="org=='chap'" ng-init='formdata.event.org=null'>
+                                <div class="input-field">
+                                    <h5>Select Chapter</h5>
+                                    <div class="input-field">
+                                        <select class="browser-default" ng-model="formdata.event.org.chapter" ng-required="true" floating-label="Chapter Name" id="chap"
+                                        name="chap">
+                                            <option disabled selected value="">
+                                            </option>
+
+                                            <option value="Society of Automotive Engineers India-VIT">Society of Automotive Engineers India-VIT
+                                            </option>
+                                            <option value="Students for the Exploration and Development of Space-VIT">Students for the Exploration and Development of Space-VIT
+                                            </option>
+                                            <option value="International Society of Automation">International Society of Automation</option>
+                                            <option value="The Instrument Society of India Students' Chapter">The Instrument Society of India Students' Chapter
+                                            </option>
+                                            <option value="Indian Society for Technical Education Students Chapter">Indian Society for Technical Education Students Chapter
+                                            </option>
+                                            <option value="IETE Students' Chapter">IETE Students' Chapter</option>
+                                            <option value="Association for Computing Machinery">Association for Computing Machinery</option>
+                                            <option value="Computer Society of India">Computer Society of India</option>
+                                            <option value="Google Developers Group Club">Google Developers Group Club</option>
+                                            <option value="Institution Electrical & Electronics Engineering Students' Chapter">Institution Electrical & Electronics Engineering Students' Chapter
+                                            </option>
+                                            <option value="IEEE Women in Engineering">IEEE Women in Engineering</option>
+                                            <option value="American Society of Civil Engineers">American Society of Civil Engineers</option>
+                                            <option value="CompBio  Discussion Group-India">CompBio Discussion Group-India</option>
+                                            <option value="VIT Materials Advantage">VIT Materials Advantage</option>
+                                            <option value="American Society of Mechanical Engineers">American Society of Mechanical Engineers
+                                            </option>
+                                            <option value="Engineering in Medicine & biology Society">Engineering in Medicine & biology Society
+                                            </option>
+                                            <option value="IEEE Professional Communication Society">IEEE Professional Communication Society
+                                            </option>
+                                            <option value="The Institution of Engineering and Technology (F)">The Institution of Engineering and Technology (F)
+                                            </option>
+                                            <option value="IEEE Computer Society">IEEE Computer Society</option>
+                                            <option value="Institution of Engineers India Students' Chapter">Institution of Engineers India Students' Chapter
+                                            </option>
+                                            <option value="IEEE - Electron Devices Society">IEEE - Electron Devices Society</option>
+                                            <option value="IEEE Power and Energy Society">IEEE Power and Energy Society</option>
+                                            <option value="Indian Institute of Chemical Engineers">Indian Institute of Chemical Engineers
+                                            </option>
+                                            <option value="Society of  Manufacturing Engineers">Society of Manufacturing Engineers</option>
+                                            <option value="Oikos International- Vellore Chapter">Oikos International- Vellore Chapter
+                                            </option>
+                                            <option value="IEEE-Robotics & Automation Society">IEEE-Robotics & Automation Society</option>
+                                            <option value="American Institute of Chemical Engineers">American Institute of Chemical Engineers
+                                            </option>
+                                            <option value="Optical Society of America">Optical Society of America</option>
+                                            <option value="IEEE Nuclear and Plasma Sciences and Society VIT Student Chapter">IEEE Nuclear and Plasma Sciences and Society VIT Student Chapter
+                                            </option>
+                                            <option value="CODECHEF">CODECHEF</option>
+                                            <option value="Association of Energy Engineers">Association of Energy Engineers</option>
+                                            <option value="IEEE Signal Processing Society">IEEE Signal Processing Society</option>
+                                            <option value="IEEE-Microwave Theory and Techniques Society">IEEE-Microwave Theory and Techniques Society
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s12 m6" ng-if="org=='club'" ng-init='formdata.event.org=null'>
+                                <div class="input-field">
+                                    <h5>Select Club</h5>
+                                    <div class="input-field">
+                                        <select class="browser-default" ng-model="formdata.event.org.club" ng-required="true" floating-label="Club Name" id="club"
+                                        name="club">
+                                            <option disabled selected value=""></option>
+                                            <option value="Youth Red Cross Association">Youth Red Cross Association</option>
+                                            <option value="Debate Society">Debate Society</option>
+                                            <option value="Dance club">Dance club</option>
+                                            <option value="Environment & Energy Protection Club">Environment & Energy Protection Club
+                                            </option>
+                                            <option value="Music Club">Music Club</option>
+                                            <option value="Health Club">Health Club</option>
+                                            <option value="Dramatics club">Dramatics club</option>
+                                            <option value="RoboVITics">RoboVITics</option>
+                                            <option value="National Service Scheme">National Service Scheme</option>
+                                            <option value="Entrepreneurs cell Club">Entrepreneurs cell Club</option>
+                                            <option value="Quiz Club">Quiz Club</option>
+                                            <option value="The Hindu Education plus Club">The Hindu Education plus Club</option>
+                                            <option value="VIT  Animation Club">VIT Animation Club</option>
+                                            <option value="Trekking Club">Trekking Club</option>
+                                            <option value="Creativity club">Creativity club</option>
+                                            <option value="VIT Film Society">VIT Film Society</option>
+                                            <option value="Photographic Club">Photographic Club</option>
+                                            <option value="Fine Arts Club">Fine Arts Club</option>
+                                            <option value="Students’ Association of Bio-Engineering Science and Technology">Students’ Association of Bio-Engineering Science and Technology
+                                            </option>
+                                            <option value="Technology and Gaming Club">Technology and Gaming Club</option>
+                                            <option value="VIT Spartans">VIT Spartans</option>
+                                            <option value="FEP - SI">FEP - SI</option>
+                                            <option value="Kalvi we nurture tomorrow">Kalvi we nurture tomorrow</option>
+                                            <option value="Juvenile Care">Juvenile Care</option>
+                                            <option value="Uddeshya">Uddeshya</option>
+                                            <option value="Cool the World">Cool the World</option>
+                                            <option value="Make A Difference">Make A Difference</option>
+                                            <option value="Tamil Literary Association">Tamil Literary Association</option>
+                                            <option value="English Literary Association">English Literary Association</option>
+                                            <option value="Telugu Literary Association (Sahiti)">Telugu Literary Association (Sahiti)
+                                            </option>
+                                            <option value="Hindi Literary Association">Hindi Literary Association</option>
+                                            <option value="Kannada Kasthuri (KLA)">Kannada Kasthuri (KLA)</option>
+                                            <option value="Year Book">Year Book</option>
+                                            <option value="TEDxVIT">TEDxVIT</option>
+                                            <option value="The Electronics Club">The Electronics Club</option>
+                                            <option value="Centre for Social Entrepreneurship Development">Centre for Social Entrepreneurship Development
+                                            </option>
+                                            <option value="VIT Culinary Club">VIT Culinary Club</option>
+                                            <option value="Ayuda">Ayuda</option>
+                                            <option value="Rotaract Club">Rotaract Club</option>
+                                            <option value="Toastmasters International Chapter">Toastmasters International Chapter</option>
+                                            <option value="Anokha">Anokha</option>
+                                            <option value="Becoming I Foundation">Becoming I Foundation</option>
+                                            <option value="Innovator's Quest">Innovator's Quest</option>
+                                            <option value="Nature Lover’s Club">Nature Lover’s Club</option>
+                                            <option value="VIT Community Radio">VIT Community Radio</option>
+                                            <option value="Deccan Chronicle Club">Deccan Chronicle Club</option>
+                                            <option value="Fifth Pillar">Fifth Pillar</option>
+                                            <option value="International Association of Students in Economic and Commercial Sciences">
+                                                International Association of Students in Economic and Commercial Sciences
+                                            </option>
+                                            <option value="Lions Club of Vellore Galaxy">Lions Club of Vellore Galaxy</option>
+                                            <option value="Mozilla Firefox">Mozilla Firefox</option>
+                                            <option value="iOS Developer Community by Apple University Program">iOS Developer Community by Apple University Program
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s12 m6" ng-if="org=='coll'" ng-init='formdata.event.org.coll=[{name:""},{name:""}]'>
+
+                                <div class="input-field">
+                                    <h5>Chapter(Club) Names</h5>
+                                    <div ng-repeat="val in formdata.event.org.coll">
+                                        <div class="input-field">
+                                            <div class="row">
+                                                <div class="col s11">
+                                                    <select class="browser-default" ng-model="val.name" ng-required="true" floating-label="Chapter/Club Name" id="{{'coll'+($index+1)}}"
+                                                    name="{{'coll'+($index+1)}}">
+                                                        <option disabled></option>
+                                                        <option value="Society of Automotive Engineers India-VIT">Society of Automotive Engineers India-VIT
+                                                        </option>
+                                                        <option value="Students for the Exploration and Development of Space-VIT">Students for the Exploration and Development of Space-VIT
+                                                        </option>
+                                                        <option value="International Society of Automation">International Society of Automation</option>
+                                                        <option value="The Instrument Society of India Students' Chapter">The Instrument Society of India Students' Chapter
+                                                        </option>
+                                                        <option value="Indian Society for Technical Education Students Chapter">Indian Society for Technical Education Students Chapter
+                                                        </option>
+                                                        <option value="IETE Students' Chapter">IETE Students' Chapter</option>
+                                                        <option value="Association for Computing Machinery">Association for Computing Machinery</option>
+                                                        <option value="Computer Society of India">Computer Society of India</option>
+                                                        <option value="Google Developers Group Club">Google Developers Group Club</option>
+                                                        <option value="Institution Electrical & Electronics Engineering Students' Chapter">Institution Electrical & Electronics Engineering Students' Chapter
+                                                        </option>
+                                                        <option value="IEEE Women in Engineering">IEEE Women in Engineering</option>
+                                                        <option value="American Society of Civil Engineers">American Society of Civil Engineers</option>
+                                                        <option value="CompBio  Discussion Group-India">CompBio Discussion Group-India</option>
+                                                        <option value="VIT Materials Advantage">VIT Materials Advantage</option>
+                                                        <option value="American Society of Mechanical Engineers">American Society of Mechanical Engineers
+                                                        </option>
+                                                        <option value="Engineering in Medicine & biology Society">Engineering in Medicine & biology Society
+                                                        </option>
+                                                        <option value="IEEE Professional Communication Society">IEEE Professional Communication Society
+                                                        </option>
+                                                        <option value="The Institution of Engineering and Technology (F)">The Institution of Engineering and Technology (F)
+                                                        </option>
+                                                        <option value="IEEE Computer Society">IEEE Computer Society</option>
+                                                        <option value="Institution of Engineers India Students' Chapter">Institution of Engineers India Students' Chapter
+                                                        </option>
+                                                        <option value="IEEE - Electron Devices Society">IEEE - Electron Devices Society</option>
+                                                        <option value="IEEE Power and Energy Society">IEEE Power and Energy Society</option>
+                                                        <option value="Indian Institute of Chemical Engineers">Indian Institute of Chemical Engineers
+                                                        </option>
+                                                        <option value="Society of  Manufacturing Engineers">Society of Manufacturing Engineers</option>
+                                                        <option value="Oikos International- Vellore Chapter">Oikos International- Vellore Chapter
+                                                        </option>
+                                                        <option value="IEEE-Robotics & Automation Society">IEEE-Robotics & Automation Society</option>
+                                                        <option value="American Institute of Chemical Engineers">American Institute of Chemical Engineers
+                                                        </option>
+                                                        <option value="Optical Society of America">Optical Society of America</option>
+                                                        <option value="IEEE Nuclear and Plasma Sciences and Society VIT Student Chapter">IEEE Nuclear and Plasma Sciences and Society VIT Student Chapter
+                                                        </option>
+                                                        <option value="CODECHEF">CODECHEF</option>
+                                                        <option value="Association of Energy Engineers">Association of Energy Engineers</option>
+                                                        <option value="IEEE Signal Processing Society">IEEE Signal Processing Society</option>
+                                                        <option value="IEEE-Microwave Theory and Techniques Society">IEEE-Microwave Theory and Techniques Society
+                                                        </option>
+                                                        <option value="Youth Red Cross Association">Youth Red Cross Association</option>
+                                                        <option value="Debate Society">Debate Society</option>
+                                                        <option value="Dance club">Dance club</option>
+                                                        <option value="Environment & Energy Protection Club">Environment & Energy Protection Club
+                                                        </option>
+                                                        <option value="Music Club">Music Club</option>
+                                                        <option value="Health Club">Health Club</option>
+                                                        <option value="Dramatics club">Dramatics club</option>
+                                                        <option value="RoboVITics">RoboVITics</option>
+                                                        <option value="National Service Scheme">National Service Scheme</option>
+                                                        <option value="Entrepreneurs cell Club">Entrepreneurs cell Club</option>
+                                                        <option value="Quiz Club">Quiz Club</option>
+                                                        <option value="The Hindu Education plus Club">The Hindu Education plus Club</option>
+                                                        <option value="VIT  Animation Club">VIT Animation Club</option>
+                                                        <option value="Trekking Club">Trekking Club</option>
+                                                        <option value="Creativity club">Creativity club</option>
+                                                        <option value="VIT Film Society">VIT Film Society</option>
+                                                        <option value="Photographic Club">Photographic Club</option>
+                                                        <option value="Fine Arts Club">Fine Arts Club</option>
+                                                        <option value="Students’ Association of Bio-Engineering Science and Technology">Students’ Association of Bio-Engineering Science and Technology
+                                                        </option>
+                                                        <option value="Technology and Gaming Club">Technology and Gaming Club</option>
+                                                        <option value="VIT Spartans">VIT Spartans</option>
+                                                        <option value="FEP - SI">FEP - SI</option>
+                                                        <option value="Kalvi we nurture tomorrow">Kalvi we nurture tomorrow</option>
+                                                        <option value="Juvenile Care">Juvenile Care</option>
+                                                        <option value="Uddeshya">Uddeshya</option>
+                                                        <option value="Cool the World">Cool the World</option>
+                                                        <option value="Make A Difference">Make A Difference</option>
+                                                        <option value="Tamil Literary Association">Tamil Literary Association</option>
+                                                        <option value="English Literary Association">English Literary Association</option>
+                                                        <option value="Telugu Literary Association (Sahiti)">Telugu Literary Association (Sahiti)
+                                                        </option>
+                                                        <option value="Hindi Literary Association">Hindi Literary Association</option>
+                                                        <option value="Kannada Kasthuri (KLA)">Kannada Kasthuri (KLA)</option>
+                                                        <option value="Year Book">Year Book</option>
+                                                        <option value="TEDxVIT">TEDxVIT</option>
+                                                        <option value="The Electronics Club">The Electronics Club</option>
+                                                        <option value="Centre for Social Entrepreneurship Development">Centre for Social Entrepreneurship Development
+                                                        </option>
+                                                        <option value="VIT Culinary Club">VIT Culinary Club</option>
+                                                        <option value="Ayuda">Ayuda</option>
+                                                        <option value="Rotaract Club">Rotaract Club</option>
+                                                        <option value="Toastmasters International Chapter">Toastmasters International Chapter</option>
+                                                        <option value="Anokha">Anokha</option>
+                                                        <option value="Becoming I Foundation">Becoming I Foundation</option>
+                                                        <option value="Innovator's Quest">Innovator's Quest</option>
+                                                        <option value="Nature Lover’s Club">Nature Lover’s Club</option>
+                                                        <option value="VIT Community Radio">VIT Community Radio</option>
+                                                        <option value="Deccan Chronicle Club">Deccan Chronicle Club</option>
+                                                        <option value="Fifth Pillar">Fifth Pillar</option>
+                                                        <option value="International Association of Students in Economic and Commercial Sciences">
+                                                            International Association of Students in Economic and Commercial Sciences
+                                                        </option>
+                                                        <option value="Lions Club of Vellore Galaxy">Lions Club of Vellore Galaxy</option>
+                                                        <option value="Mozilla Firefox">Mozilla Firefox</option>
+                                                        <option value="iOS Developer Community by Apple University Program">iOS Developer Community by Apple University Program
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col s1">
+                                                    <i class="material-icons" ng-click="delColl($index);">&#xE5C9;</i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default" ng-click="addColl()">ADD</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="row">
+                            <div class=" col s12 m6">
+                                <div class="input-field">
+                                    <h5>Participation</h5>
+                                    <input id="team" class="validate" name="team" value="true" ng-model="formdata.team" ng-required="true" type="radio">
+                                    <label for="team">Team</label>
+                                    <br>
+                                    <input id="individual" class="validate" name="team" value="false" ng-model="formdata.team" ng-required="true" type="radio">
+                                    <label for="individual">Individual</label>
+
+                                    <div class="field-hint" ng-messages="formdata.team.$error" ng-show="formdata.team.$dirty && formdata.team.$invalid">
+                                        <div ng-message="required">
+                                            This is required field.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="input-field">
+                                <textarea class="validate" floating-label="Summary" id="summary" materialize-textarea="true" name="summary" ng-model="formdata.event.summary"
+                                ng-required="true"></textarea>
+
+
+
+                                <div class="field-hint" ng-messages="eventsForm.summary.$error" ng-show="eventsForm.summary.$dirty&&eventsForm.summary.$invalid">
+                                    <div ng-message="required">
+                                        This is a required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="input-field">
+                                <textarea character-counter="300" class="validate" ng-required="true" floating-label="Description" id="description" materialize-textarea="true"
+                                name="description" ng-model="formdata.event.description"></textarea>
+
+                                <div class="field-hint" ng-messages="eventsForm.description.$error" ng-show="eventsForm.description.$dirty && eventsForm.description.$invalid">
+                                    <div ng-message="required">
+                                        This is a required field.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <h4>Coordinator Details</h4>
+
+
+                    <div class="section">
+                        <div class="row">
+                            <div class=" col s12 m5 offset-m1" ng-repeat="value in formdata.coordinators">
+                    <div class="row">
+                                <h5><b>{{"Coordinator "+($index+1)}}</b></h5><!--<i class="material-icons" ng-click="delCoord($index);">cancel</i><h5>-->
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Name" id="coName{{$index}}" name="coName{{$index}}" ng-model="value.name" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm['coName{{$index}}'].$error" ng-show="eventsForm['coName{{$index}}'].$dirty && eventsForm['coName{{$index}}'].$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Registration No." id="coReg{{$index}}" name="coReg{{$index}}" ng-model="value.reg"
+                                        ng-required="true" type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm['coReg{{$index}}'].$error" ng-show="eventsForm['coReg{{$index}}'].$dirty && eventsForm['coReg{{$index}}'].$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Email" id="coEm{{$index}}" name="coEm{{$index}}" ng-model="value.email" ng-required="true"
+                                        type="email">
+
+                                        <div class="field-hint" ng-messages="eventsForm['coEm{{$index}}'].$error" ng-show="eventsForm['coEm{{$index}}'].$dirty && eventsForm['coEm{{$index}}'].$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="email">
+                                                Please provide a valid email.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input character-counter="10" class="validate" floating-label="Phone Number" id="coNo{{$index}}" name="coNo{{$index}}" ng-maxlength="10" ng-minlength="10"
+                                        ng-model="value.phone" ng-pattern="/^[0-9]*$/" ng-required="true"
+                                        type="tel">
+
+                                        <div class="field-hint" ng-messages="eventsForm['coNo{{$index}}'].$error" ng-show="eventsForm['coNo{{$index}}'].$dirty && eventsForm['coNo{{$index}}'].$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="pattern">
+                                                Please provide a valid phone number.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Room Number" id="coRo{{$index}}" name="coRo{{$index}}" ng-model="value.room" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm['coRo{{$index}}'].$error" ng-show="eventsForm['coRo{{$index}}'].$dirty && eventsForm['coRo{{$index}}'].$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+
+                    </div>
+<!--                    <div class="row">
+                    <button ng-click="addCoord()" type="button" class="btn btn-default">ADD</button>
+                </div>-->
+                    <!--
+                            <div class=" col s12 m5 offset-m1">
+                                <h5>Coordinator 2 Details</h5>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Name" id="coName2" name="coName2" ng-model="formdata.coordinators[1].name" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coName2.$error" ng-show="eventsForm.coName2.$dirty && eventsForm.coName2.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Registration No." id="coReg2" name="coReg2" ng-model="formdata.coordinators[1].regno"
+                                        ng-required="true" type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coReg2.$error" ng-show="eventsForm.coReg2.$dirty && eventsForm.coReg2.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Email" id="coEm2" name="coEm2" ng-model="formdata.coordinators[1].email" ng-required="true"
+                                        type="email">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coEm2.$error" ng-show="eventsForm.coEm2.$dirty && eventsForm.coEm2.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="email">
+                                                Please provide a valid email.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input character-counter="10" class="validate" floating-label="Phone Number" id="coNo2" name="coNo2" ng-maxlength="10" ng-minlength="10"
+                                        ng-model="formdata.coordinators[1].phone" ng-pattern="/^[0-9]{10,10}$/" ng-required="true"
+                                        type="tel">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coNo2.$error" ng-show="eventsForm.coNo2.$dirty && eventsForm.coNo2.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="pattern">
+                                                Please provide a valid phone number.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Room Number" id="coRo2" name="coRo2" ng-model="formdata.coordinators[1].room" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coRo2.$error" ng-show="eventsForm.coRo2.$dirty && eventsForm.coRo2.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+
+                    <!--                        <div class="row">
+                            <div class=" col s12 m5 offset-m1">
+                                <h5>Coordinator 3 Details</h5>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Name" id="coName3" name="coName3" ng-model="formdata.coordinators[2].name" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coName3.$error" ng-show="eventsForm.coName3.$dirty && eventsForm.coName3.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Registration No." id="coReg3" name="coReg3" ng-model="formdata.coordinators[2].regno"
+                                        ng-required="true" type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coReg1.$error" ng-show="eventsForm.coReg3.$dirty && eventsForm.coReg3.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Email" id="coEm3" name="coEm3" ng-model="formdata.coordinators[2].email" ng-required="true"
+                                        type="email">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coEm3.$error" ng-show="eventsForm.coEm3.$dirty && eventsForm.coEm3.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="email">
+                                                Please provide a valid email.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input character-counter="10" class="validate" floating-label="Phone Number" id="coNo3" name="coNo3" ng-maxlength="10" ng-minlength="10"
+                                        ng-model="formdata.coordinators[2].phone" ng-pattern="/^[0-9]*$/" ng-required="true"
+                                        type="tel">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coNo3.$error" ng-show="eventsForm.coNo3.$dirty && eventsForm.coNo3.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+
+
+                                            <div ng-message="pattern">
+                                                Please provide a valid phone number.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Room Number" id="coRo1" name="coRo3" ng-model="formdata.coordinators[2].room" ng-required="true"
+                                        type="text">
+
+                                        <div class="field-hint" ng-messages="eventsForm.coRo3.$error" ng-show="eventsForm.coRo3.$dirty && eventsForm.coRo3.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                    <h4>Finance Details</h4>
+
+
+                    <div class="section">
+                        <div class="row">
+                            <div class=" col s12 m6">
+
+                                <h5>Fees</h5>
+
+                                <div class=" col s12">
+                                    <div class="input-field">
+                                        <input class="validate" floating-label="Fees per team" id="fees" name="fees" ng-model="formdata.finance.fees" ng-required="true"
+                                        type="number" min="0">
+
+                                        <div class="field-hint" ng-messages="eventsForm.fees.$error" ng-show="eventsForm.fees.$dirty && eventsForm.fees.$invalid">
+                                            <div ng-message="required">
+                                                This is required field.
+                                            </div>
+                                            <div ng-message="min">
+                                                This field can't be negative.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!--                <div class="col s12 m6">
+                  <h5>Total Sponsorship</h5>
+                  <div class="col s12">
+                    <div class="input-field">
+                      <input type="number" min="0" class="validate" id="spon"
+                             floating-label="Total Sponsorship" name="spon"
+                             ng-model="formdata.finance.sponsorship.total" ng-required="true">
+
+                      <div class="field-hint" ng-messages=
+                      "eventsForm.spon.$error" ng-show=
+                      "eventsForm.spon.$dirty && eventsForm.spon.$invalid">
+                        <div ng-message="required">
+                          This is required field.
+                        </div>
+                        <div ng-message="min">
+                          This field can't be negative.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <h5>Sponsorship Breakdown</h5>
+                  <div class="col s12">
+
+
+                    <div ng-repeat="val in formdata.finance.sponsorship.breakdown">
+                      <h6><b>{{"Sponsor "+($index+1)}}</b><i class="material-icons" ng-click="delSpon($index);">&#xE5C9;</i><h6>
+                        <div class="col s11 offset-s1">
+                          <div class="input-field">
+                            <input floating-label="Source" type="text" class="validate" ng-model="val.source" name="sponSource{{$index}}" ng-required="true">
+                            <div class="field-hint" ng-messages="eventsForm['sponSource{{$index}}'].$error"
+                            ng-show="eventsForm['sponSource{{$index}}'].$dirty && eventsForm['sponSource{{$index}}'].$invalid">
+                              <div ng-message="required">
+                                This is required field.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="input-field" ng-init="val.sponsorship_type='cash'">
+                            <select ng-required="true" class="validate browser-default" floating-label="Sponsorship Type" ng-model="val.sponsorship_type">
+                              <option value="cash">Cash</option>
+                              <option value="kind">Kind</option>
+                            </select>
+                          </div>
+
+                          <div class="input-field">
+                            <input floating-label="Amount" type="Number" class="validate" name="amount{{$index}}" ng-model="val.amount" ng-required="true" min="0">
+                            <div class="field-hint" ng-messages="eventsForm['amount{{$index}}'].$error"
+                            ng-show="eventsForm['amount{{$index}}'].$dirty && eventsForm['amount{{$index}}'].$invalid">
+                              <div ng-message="required">
+                                This is required field.
+                              </div>
+                              <div ng-message="min">
+                                This field can't be negative.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button ng-click="addSpon()" type="button" class="btn btn-default">
+                        ADD
+                      </button>
+                    </div>
+                  </div>-->
+
+
+                  <div class="col s12">
+
+                      <h5>Total Prize</h5>
+                      <div class="col s12 m6">
+                          <div class="input-field">
+                              <input id="cash" name="prizemoney" value="cash" ng-model="formdata.prizemoney" ng-required="true" type="radio">
+                              <label for="cash">Cash</label>
+                              <br>
+                              <input id="other" name="prizemoney" value="other" ng-model="formdata.prizemoney" ng-required="true" type="radio">
+                              <label for="other">Other</label>
+                          </div>
+                      </div>
+                      <div class="col s12 m6" ng-if="formdata.prizemoney=='other'">
+                          <div class="input-field">
+                              <input type="text" class="validate" floating-label="Description" ng-model="formdata.prize.other" name="otherDesc" ng-required="true" id="otherDesc">
+                              <div class="field-hint" ng-messages="eventsForm['otherDesc'].$error"
+                              ng-show="eventsForm['otherDesc'].$dirty && eventsForm['otherDesc'].$invalid">
+                                <div ng-message="required">
+                                  This is required field.
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div ng-if="formdata.prizemoney=='cash'" class="col s12">
+                        <div class="row">
+
+                          <div class="input-field">
+                              <input type="number" class="validate" id="prize" min="0" ng-disabled="true" floating-label="Total Prize Money" name="prize" ng-model="formdata.finance.prize.total"
+                              ng-required="true">
+<!--
+                              <div class="field-hint" ng-messages="eventsForm.prize.$error" ng-show="eventsForm.prize.$dirty && eventsForm.prize.$invalid">
+                                  <div ng-message="required">
+                                      This is required field.
+                                  </div>
+                                  <div ng-message="min">
+                                      This field can't be negative.
+                                  </div>
+                              </div>    -->
+                          </div>
+                      </div>
+
+                      <div class="col s12">
+                        <div class="row">
+
+                          <div class="col s12" ng-repeat="value in formdata.finance.prize.breakdown">
+                            <div class="col s1"><h4>{{$index+1}}</h4></div>
+                              <div class="col s8" >
+                                  <div class="input-field">
+
+                                      <input type="number" ng-change="totalPrize()" class="validate" min="0" floating-label="Prize Money" name="prize{{$index}}" ng-model="value.amount"
+                                      ng-required="true">
+                                      <div class="field-hint" ng-messages="eventsForm['prize{{$index}}'].$error" ng-show="eventsForm['prize{{$index}}'].$dirty && eventsForm['prize{{$index}}'].$invalid">
+                                          <div ng-message="required">
+                                              This is required field.
+                                          </div>
+                                          <div ng-message="min">
+                                              This field can't be negative.
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col s3">
+                                  <button ng-click="delBreak($index)" type="button" class="btn btn-default">remove</button>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <button ng-click="addBreak()" type="button" class="btn btn-default">ADD</button>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
+                    <div class="row">
+                        <div class="col s12">
+                            <h5>Guest Details</h5>
+                            <div class="col s12 m6" ng-repeat="val in formdata.guest">
+                                <h6><b>{{"Guest "+($index+1)}}</b><i class="material-icons" ng-click="delGuest($index);">cancel</i><h6>
+                    <div class="row">
+                      <div class="col s11 offset-s1">
+                        <div class="input-field">
+                          <input type="text" class="validate" floating-label="Name" ng-model="val.name" name="guestN{{$index}}" ng-required="true">
+                          <div class="field-hint" ng-messages="eventsForm['guestN{{$index}}'].$error"
+                          ng-show="eventsForm['guestN{{$index}}'].$dirty && eventsForm['guestN{{$index}}'].$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="Number" class="validate" floating-label="Travel Amount" name="travAmount{{$index}}" ng-model="val.travel.amount" ng-required="true" min="0">
+                          <div class="field-hint" ng-messages="eventsForm['travAmount{{$index}}'].$error"
+                          ng-show="eventsForm['travAmount{{$index}}'].$dirty && eventsForm['travAmount{{$index}}'].$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="text" class="validate" floating-label="Travelling From" name="trav{{$index}}" ng-model="val.travel.from" ng-required="true">
+                          <div class="field-hint" ng-messages="eventsForm['trav{{$index}}'].$error"
+                          ng-show="eventsForm['trav{{$index}}'].$dirty && eventsForm['trav{{$index}}'].$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="Number" min="0" class="validate" floating-label="Stay Duration" name="stayDur{{$index}}" ng-model="val.stay.duration" ng-required="true">
+                          <div class="field-hint" ng-messages="eventsForm['stayDur{{$index}}'].$error"
+                          ng-show="eventsForm['stayDur{{$index}}'].$dirty && eventsForm['stayDur{{$index}}'].$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="Number" class="validate" floating-label="Food Units" name="foodUnits{{$index}}" ng-model="val.food.units" ng-required="true" min="0">
+                          <div class="field-hint" ng-messages="eventsForm['foodUnits{{$index}}'].$error"
+                          ng-show="eventsForm['foodUnits{{$index}}'].$dirty && eventsForm['foodUnits{{$index}}'].$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button ng-click="addGuest()" type="button" class="btn btn-default">ADD</button>
+                </div>
+              </div>
+
+              <h4>Miscellaneous Cost</h4>
+
+              <div class="row">
+                  <div class="input-field">
+                      <div class="col s12 m9">
+                          <select class="browser-default" ng-model="formdata.select" ng-options="key as key for (key,val) in formdata.costs" ng-change="costChange()"></select>
+                      </div>
+                      <div class="col s12 m3">
+                          <button type="button" class="btn btn-default" ng-click="addCost()">Add Cost</button>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+
+                <div ng-if="formdata.costs.Certificates" class="col s12 m5 offset-m1">
+                  <div class="section">
+                      <div class="row">
+                    <h5>Certificates<i class="material-icons" ng-click="delCost('Certificates');">cancel</i></h5>
+                        <div class="col s12">
+<!--                     <div class="input-field">
+                          <input type="number" class="validate" floating-label="Coordinator" id="certCoor" min="0"
+                          name="certCoor" ng-required="true" ng-model="formdata.finance.budget.certificates.coordinator">
+                          <div class="field-hint" ng-messages="eventsForm.certCoor.$error"
+                          ng-show="eventsForm.certCoor.$dirty && eventsForm.certCoor.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Participant" id="certPart" min="0"
+                          name="certPart" ng-required="true" ng-model="formdata.finance.budget.certificates.participant">
+                          <div class="field-hint" ng-messages="eventsForm.certPart.$error"
+                          ng-show="eventsForm.certPart.$dirty && eventsForm.certPart.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+
+                    <div class="input-field">
+                          <input type="number" class="validate" floating-label="Winner" id="certWin" min="0"
+                          name="certWin" ng-required="true" ng-model="formdata.finance.budget.certificates.winner">
+                          <div class="field-hint" ng-messages="eventsForm.certWin.$error"
+                          ng-show="eventsForm.certWin.$dirty && eventsForm.certWin.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+-->
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Units" id="certTot" min="0"
+                          name="certTot" ng-required="true" ng-model="formdata.finance.budget.certificates.total">
+                          <div class="field-hint" ng-messages="eventsForm.certTot.$error"
+                          ng-show="eventsForm.certTot.$dirty && eventsForm.certTot.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Cost" id="certCost" min="0"
+                          name="certCoor" ng-required="true" ng-model="formdata.finance.budget.certificates.cost">
+                          <div class="field-hint" ng-messages="eventsForm.certCost.$error"
+                          ng-show="eventsForm.certCost.$dirty && eventsForm.certCost.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+                </div>
+
+
+                        <div ng-if="formdata.costs.Mementos" class="col s12 m5 offset-m1">
+                  <div class="section">
+                    <div class="row">
+                      <h5>Mementos<i class="material-icons" ng-click="delCost('Mementos');">cancel</i></h5>
+                      <div class="col s12">
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Units" id="memUnit" min="0"
+                          name="memUnit" ng-required="true" ng-model="formdata.finance.budget.mementos.unit">
+                          <div class="field-hint" ng-messages="eventsForm.memUnit.$error"
+                          ng-show="eventsForm.memUnit.$dirty && eventsForm.memUnit.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Cost" id="memCost" min="0"
+                          name="memCost" ng-required="true" ng-model="formdata.finance.budget.mementos.cost">
+                          <div class="field-hint" ng-messages="eventsForm.memCost.$error"
+                          ng-show="eventsForm.memCost.$dirty && eventsForm.memCost.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div ng-if="formdata.costs.Tags" class="col s12 m5 offset-m1">
+                  <div class="section">
+                    <div class="row">
+                      <h5>Tags<i class="material-icons" ng-click="delCost('Tags');">cancel</i></h5>
+                      <div class="col s12">
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Units" id="tagUnit" min="0"
+                          name="tagUnit" ng-required="true" ng-model="formdata.finance.budget.tags.unit">
+                          <div class="field-hint" ng-messages="eventsForm.tagUnit.$error"
+                          ng-show="eventsForm.tagUnit.$dirty && eventsForm.tagUnit.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="input-field">
+                          <input type="number" class="validate" floating-label="Cost" id="tagCost" min="0"
+                          name="tagCost" ng-required="true" ng-model="formdata.finance.budget.tags.cost">
+                          <div class="field-hint" ng-messages="eventsForm.tagCost.$error"
+                          ng-show="eventsForm.tagCost.$dirty && eventsForm.tagCost.$invalid">
+                            <div ng-message="required">
+                              This is required field.
+                            </div>
+                            <div ng-message="min">
+                              This field can't be negative.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              </div>
+              <div ng-if="formdata.costs.Others" ng-init="formdata.others=[{'description':'','cost':0}]" class="row">
+                  <div class="section">
+                      <div class="row">
+                          <h5>Others<i class="material-icons" ng-click="delCost('Others');">cancel</i></h5>
+                          <div class="col s12">
+                              <div ng-repeat="val in formdata.others">
+                                  <h6><b>{{"Other Cost "+($index+1)}}</b><i class="material-icons" ng-click="delOther($index);">cancel</i><h6>
+                                  <div class="col s12 m5">
+                                      <div class="input-field">
+                                          <input class="validate" floating-label="Name" id="othersN{{$index}}" name="othersN{{$index}}" ng-model="value.description" ng-required="true"
+                                          type="text">
+
+                                          <div class="field-hint" ng-messages="eventsForm['othersN{{$index}}'].$error" ng-show="eventsForm['othersN{{$index}}'].$dirty && eventsForm['othersN{{$index}}'].$invalid">
+                                              <div ng-message="required">
+                                                  This is required field.
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col s12 m5 offset-m2">
+                                      <div class="input-field">
+                                        <input type="number" class="validate" floating-label="Cost" id="othersC{{$index}}" min="0"
+                                        name="othersC{{$index}}" ng-required="true" ng-model="val.cost">
+                                        <div class="field-hint" ng-messages="eventsForm['othersC{{$index}}'].$error"
+                                        ng-show="eventsForm['othersC{{$index}}'].$dirty && eventsForm['othersC{{$index}}'].$invalid">
+                                          <div ng-message="required">
+                                            This is required field.
+                                          </div>
+                                          <div ng-message="min">
+                                            This field can't be negative.
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div class="">
+                              </div>
+                              <button type="button" class="btn" ng-click="addOther()">ADD</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12 m6">
+              <div class="row">
+                <div class="col s12">
+                  <div class="section">
+                    <h5>Income</h5>
+                    <div class="input-field">
+                      <input type="number" class="validate" name="income" id="income" ng-model="formdata.finance.income" floating-label="Income" ng-required="true" min="0">
+                      <div class="field-hint" ng-messages="eventsForm.income.$error"
+                      ng-show="eventsForm.income.$dirty && eventsForm.income.$invalid">
+                        <div ng-message="required">
+                          This is required field.
+                        </div>
+                        <div ng-message="min">
+                          This field can't be negative.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col s12">
+                  <div class="section">
+                    <h5>Profit</h5>
+                    <div class="input-field">
+                      <input type="number" ng-model="formdata.finance.profit" class="validate" floating-label="Profit" id="profit"
+                      name="profit" ng-required="true" min="0">
+                      <div class="field-hint" ng-messages="eventsForm.profit.$error"
+                      ng-show="eventsForm.profit.$dirty && eventsForm.profit.$invalid">
+                        <div ng-message="required">
+                          This is required field.
+                        </div>
+                        <div ng-message="min">
+                          This field can't be negative.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col s12 m6">
+              <div class="row">
+                <div class="col s12">
+                  <div class="section">
+                    <h5>Expenditure</h5>
+                    <div class="input-field">
+                      <input type="number" class="validate" floating-label="Expenditure" id="profit"
+                      name="expenditure" ng-required="true" ng-model="formdata.finance.expenditure" min="0">
+                      <div class="field-hint" ng-messages="eventsForm.expenditure.$error"
+                      ng-show="eventsForm.expenditure.$dirty && eventsForm.expenditure.$invalid">
+                        <div ng-message="required">
+                          This is required field.
+                        </div>
+                        <div ng-message="min">
+                          This field can't be negative.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+
+                  <button class="btn waves-effect waves-light" name="action"
+              ng-disabled="eventsForm.$invalid" type="submit" >Submit
+              <i class="material-icons right">send</i></button>
+
+
+          </div>
+        </div>
+    </div>
+      </form>
+    </div>
+
+
+    <!--SCRIPTS-->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/waves/dist/waves.min.js"></script>
+    <script src="bower_components/ng-materialize/dist/ng-materialize.min.js"></script>
+    <!--SCRIPTS END-->
+    <script type="text/javascript">
+angular
+    .module('EventsApp', ['ngMaterialize'])
+    .controller('FormCtrl', function ($scope, $http, $toast) {
+        function init(){
+            $scope.formdata = { team:"false",coordinators:[{name:"", regno:"", phone:"", email:"", room:"" },{name:"", regno:"", phone:"", email:"", room:"" }], event: { org: { coll: null } }, finance: { prize:{total:0,breakdown:[{amount:0}] },sponsorship: { breakdown: null } } };
+            $scope.formdata.event.org.coll = [{ name: "" }, { name: "" }];
+            $scope.formdata.finance.sponsorship.breakdown = [{ source: "", sponsorship_type: "", amount: 0 }];
+            $scope.formdata.guest = [{ name: "", travel: { amount: 0, from: "" }, stay: { duration: 0 }, food: { units: 0 } }];
+            $scope.formdata.costs = {"Certificates":false,"Tags":false,"Mementos":false,"Others":false};
+            $scope.formdata.others = [];
+            $scope.stat = "";
+            $scope.formdata.select = $scope.formdata.costs["Certificates"];
+            $scope.org="chap";
+            $scope.formdata.prizemoney="cash";
+        }
+        //  Prevent duplicate club/chapter name in collaboration before submitting
+        function dup(){
+          var temp=$scope.formdata.event.org.coll;
+          for(var i=0;i<temp.length;i++){
+            for(var j=i+1;j<temp.length;j++){
+              if(temp[i].name==temp[j].name){
+                $toast.show("The collaboration contains duplicate entry! Please correct that and retry submitting the form.",4000)
+                return true;
+              }
+            }
+          }
+        }
+        init();
+        $scope.totalPrize=function(){
+          var temp=0;
+          for(var i=0;i<$scope.formdata.finance.prize.breakdown.length;i++){
+            temp+=$scope.formdata.finance.prize.breakdown[i].amount;
+          }
+          $scope.formdata.finance.prize.total=temp;
+        }
+        $scope.addColl = function () {
+            $scope.formdata.event.org.coll.push({ name: "" });
+        };
+        $scope.delColl = function (v) {
+            if ($scope.formdata.event.org.coll.length == 2) {
+                $toast.show("A collaboration requires atleast 2 clubs(chapters).");
+            }
+            else {
+                $scope.formdata.event.org.coll.splice(v, 1);
+            }
+        };
+
+        $scope.addOther = function (){
+            $scope.formdata.others.push({'description':'','cost':0});
+        };
+
+        $scope.delOther = function(v){
+            if($scope.formdata.others.length!=1){
+                $scope.formdata.others.splice(v,1);
+                $toast.show("Deleted 1 Other cost field!");
+            }
+            else{
+                $toast.show("Atleast one other cost field is required.",4000);
+            }
+        }
+
+        $scope.addBreak = function (){
+          if($scope.formdata.finance.prize.breakdown.length==3){
+            $toast.show("There can be maximum of 3 Prizes",4000);
+          }
+          else {
+            $scope.formdata.finance.prize.breakdown.push({amount:0});
+            $toast.show("Prize Breakdown Added!",3500);
+          }
+        };
+
+        $scope.addCost = function(){
+            console.log($scope.formdata.select);
+            if($scope.formdata.select){
+                $scope.formdata.costs[$scope.formdata.select]=true;
+                $toast.show("Added cost field!");
+            }
+        };
+/*
+        $scope.costChange = function(){
+            $toast.show(JSON.stringify($scope.formdata.select));
+        }
+*/
+        $scope.delCost = function(v){
+            $scope.formdata.costs[v]=false;
+            $toast.show("Cost Field removed!");
+        };
+
+        $scope.delBreak = function (v) {
+          if($scope.formdata.finance.prize.breakdown.length!=1){
+            $scope.formdata.finance.prize.breakdown.splice(v, 1);
+          }
+          else {
+            $toast.show("Atleast one prize money breakdown is required.",4000);
+          }
+          $scope.totalPrize();
+        };
+
+        $scope.addCoord = function(){
+          if($scope.formdata.coordinators.length==3){
+              $toast.show("An event can have max of 3 coordinators.",4000);
+          }
+          else {
+            $scope.formdata.coordinators.push({name:"", regno:"", phone:"", email:"", room:"" });
+            $toast.show("Coordinator field added!",4000);
+          }
+        };
+
+        $scope.delCoord = function(n){
+          if($scope.formdata.coordinators.length==1){
+            $toast.show("An event needs atleast 1 coordinator.",4000);
+          }
+          else {
+            $scope.formdata.coordinators.splice(n, 1);
+          }
+        }
+
+        $scope.addSpon = function () {
+            $scope.formdata.finance.sponsorship.breakdown.push({ source: "", sponsorship_type: "", amount: 0 });
+        };
+
+        $scope.delSpon = function (v) {
+            $scope.formdata.finance.sponsorship.breakdown.splice(v, 1);
+        };
+
+        $scope.addGuest = function () {
+            var obj = { name: "", travel: { amount: 0, from: "" }, stay: { duration: 0 }, food: { units: 0 } };
+            $scope.formdata.guest.push(obj);
+            $toast.show("GuestAdded!");
+        };
+
+        $scope.delGuest = function (v) {
+            $scope.formdata.guest.splice(v, 1);
+        };
+
+        $scope.sub = function () {
+            //  Converting array of objects to array items.(ng-repeat doesnt allow duplicate array items.)
+            var temp=[];
+            for(var i=0 ; i<$scope.formdata.finance.prize.breakdown ; i++){
+                temp.push(parseInt($scope.formdata.finance.prize.breakdown[i].amount));
+            }
+            $scope.formdata.finance.prize.breakdown=temp;
+            //    Radio button can't take boolean values as models.
+            if($scope.formdata.team=="false"){
+              $scope.formdata.team=false;
+            }
+            else {
+              $scope.formdata.team=true;
+            }
+
+            //  check for duplicates in collaboration
+            if($scope.formdata.event.org.hasOwnProperty('coll')){
+              if(dup()){
+                return
+              }
+            }
+
+            var data = {
+                "coordinators": $scope.formdata.coordinators,
+                "faculty": $scope.formdata.faculty,
+                "event": {
+                    "name": $scope.formdata.event.name,
+                    "event_type": $scope.formdata.event.type,
+                    "org": $scope.formdata.event.org,
+                    "summary": $scope.formdata.event.summary,
+                    "description": $scope.formdata.event.description,
+                },
+                "finance":
+                {
+                    "fees": $scope.formdata.finance.fees,
+                    "prize":
+                    {
+                        "total": $scope.formdata.finance.prize.total,
+                        "breakdown": $scope.formdata.finance.prize.breakdown
+                    },
+                    "sponsorship":
+                    {
+                        "total": $scope.formdata.finance.sponsorship.total,
+                        "breakdown": $scope.formdata.finance.sponsorship.breakdown
+                    },
+                    "income": $scope.formdata.finance.income,
+                    "budget":
+                    {
+                        "mementos":
+                        {
+                            "units": $scope.formdata.finance.budget.mementos.units,
+                            "cost": $scope.formdata.finance.budget.mementos.cost
+                        },
+                        "purchase": $scope.formdata.finance.budget.purchase,
+                        "tags":
+                        {
+                            "units": $scope.formdata.finance.budget.tags.units,
+                            "cost": $scope.formdata.finance.budget.tags.cost
+                        },
+                        "certificates":
+                        {
+                            "coordinator": $scope.formdata.finance.budget.certificates.coordinator,
+                            "participant": $scope.formdata.finance.budget.certificates.participant,
+                            "winner": $scope.formdata.finance.budget.certificates.winner,
+                            "total": $scope.formdata.finance.budget.certificates.total,
+                            "cost": $scope.formdata.finance.budget.certificates.cost
+                        },
+                        "travel": $scope.formdata.finance.budget.travel,
+                        "food": $scope.formdata.finance.budget.food,
+                        "stay": $scope.formdata.finance.budget.stay
+                    },
+                    "expenditure": $scope.formdata.finance.expenditure,
+                    "profit": $scope.formdata.finance.profit
+                },
+                "guest": $scope.formdata.guest,
+                "team": $scope.formdata.team,
+            };
+            $http.post("/api/event/", data).then(
+                function (response) {
+                    // Success
+                    console.log("Success");
+                    console.log(JSON.stringify(response));
+                    $toast.show('Form successfully submitted! ', 7000);
+                    $scope.formdata = {};
+                    $scope.eventsForm.$setPristine();
+                    $scope.eventsForm.$setUntouched();
+                    $scope.org = {};
+                    init();
+                },
+                function (response) {
+                    // Faliure
+                    console.log("Faliure");
+                    console.log(JSON.stringify(response));
+                    $toast.show("An error occured.", 7000);
+                });
+        }
+    });
+    </script>
+  </body>
+
+</html>

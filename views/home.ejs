@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <title>Home</title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+
+  <!--STYLES END-->
+
+
+
+  <!--Inline style end-->
+</head>
+
+<body ng-controller="HomeCtrl">
+
+  <div class="container">
+    <div class="row">
+      <div class="column column-50 column-offset-25">
+
+        <h1>Home</h1>
+        <ul>
+            <% for(var i=0; i<options.length; i++){ %>
+                <li>
+                  <a href="<%=options[i].url%>"><%=options[i].title%></a>
+                </li>
+            <% } %>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

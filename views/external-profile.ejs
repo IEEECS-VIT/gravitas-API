@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="profileApp">
+
+<head>
+  <title> External | Profile </title>
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <style media="screen">
+      input[disabled]{
+          background-color: #d1d1d1 !important;
+          text-decoration-color: black!important;
+      }
+  </style>
+  <!--STYLES END-->
+</head>
+<body>
+    <div class="container" ng-controller="detailsCtrl">
+        <div class="row">
+            <div class="column column-80 column-offset-10">
+                <div class="row">
+                    <div class="column column-80">
+                        <h1> External Participant </h1>
+                    </div>
+                    <div class="column">
+                        <a class="button" href="/logout">Logout</a> </button>
+                    </div>
+                </div>
+                <fieldset>
+                <div class="row">
+                  <span class="column column-20"><label for="fullName">Full Name</label></span>
+                  <span class="column column-80"><input disabled type="text" name="fullName" ng-model="user.fullName"/></span>
+                </div>
+
+                <div class="row">
+                  <span class="column column-20"><label for="email">Email</label></span>
+                  <span class="column column-80"><input ng-disabled="true" type="email" name="email" ng-model="user.email" /></span>
+                </div>
+
+                <div class="row">
+                  <span class="column column-20"><label for="institute">Institute</label></span>
+                  <span class="column column-80"><input disabled type="text" name="institute" ng-model="user.institute" /></span>
+                </div>
+
+                <div class="row">
+                  <span class="column column-20"><label for="gender">Gender</label></span> <br>
+                  <span class="column column-40">
+                    <label for="gender-male"> <input disabled type="radio" id="gender-male" name="gender" value="male" ng-model="user.gender" /> Male </label>
+
+                  </span>
+                  <span class="column column-40">
+                    <label for="gender-female"> <input disabled type="radio" id="gender-female" name="gender" value="female" ng-model="user.gender"/> Female </label>
+                  </span>
+                </div>
+
+                <div class="row">
+                  <span class="column column-20"><label for="username">Username</label></span>
+                  <span class="column column-80"><input disabled type="text" id="username" name="username" ng-model="user.username"/></span>
+                </div>
+
+                </fieldset>
+                <div class="row">
+                    <span class="column column-20">Events</span>
+                    <span class="column column-80">
+                        <ul>
+                            <li ng-repeat="val in events track by $index">{{events[$index]}}</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        angular.module('profileApp',[])
+        .controller('detailsCtrl', function($scope){
+            var getEventIds = function(){
+                var data = [<%-events%>], temp=[];
+                for(var i=0;i<data.length; i++){
+                    for(var j=0;j<data[i].eventIds.length; j++){
+                        temp.push(data[i].eventIds[j]);
+                    }
+                }
+                return temp;
+            }
+            $scope.user = {
+                    gender: "<%= user.details.gender %>",
+                    email: "<%= user.details.email %>",
+                    institute: "<%= user.details.institute %>",
+                    fullName: "<%= user.details.fullName %>" ,
+                    username: "<%= user._id %>"
+            }
+            $scope.events = getEventIds();
+        })
+    </script>
+</body>
+</html>
